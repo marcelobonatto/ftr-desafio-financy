@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "- [ ] O usuário pode criar uma conta e fazer login\r - [ ] O usuário pode ver e gerenciar apenas as transações e categorias criadas por ele\r - [ ] Deve ser possível criar uma transação\r - [ ] Deve ser possível deletar uma transação\r - [ ] Deve ser possível editar uma transação\r - [ ] Deve ser possível listar todas as transações\r - [ ] Deve ser possível criar uma categoria\r - [ ] Deve ser possível deletar uma categoria\r - [ ] Deve ser possível editar uma categoria\r - [ ] Deve ser possível listar todas as categorias",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts"  
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "prisma": "^7.4.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.4.0",
+    "@prisma/client": "^7.4.0",
+    "graphql": "^16.12.0"
+  }
+}
