@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import express from 'express';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
@@ -5,6 +6,7 @@ import { buildSchema } from 'type-graphql';
 import { expressMiddleware } from '@as-integrations/express5';
 import { buildContext } from './graphql/context/index';
 import { AuthResolver } from './resolvers/auth.resolver';
+import { UserResolver } from './resolvers/user.resolver';
 
 async function bootstrap() {
     const app = express();
@@ -15,7 +17,7 @@ async function bootstrap() {
     }));
 
     const schema = await buildSchema({
-        resolvers: [AuthResolver],
+        resolvers: [AuthResolver, UserResolver],
         validate: false,
         emitSchemaFile: './schema.graphql'
     })

@@ -1,7 +1,7 @@
-import { LoginInput } from "../dtos/input/auth.input";
+import { LoginInput, RegisterInput } from "../dtos/input/auth.input";
 import { prismaClient } from "../lib/prisma";
 import type { UserModel } from "../models/user.model";
-import { comparePassword } from "../utils/hash";
+import { comparePassword, hashPassword } from "../utils/hash";
 import { signJwt } from "../utils/jwt";
 
 export class AuthService {
@@ -14,7 +14,7 @@ export class AuthService {
             }
         });
 
-        if (!existingUser) {
+        if (!existingUser || !existingUser.password) {
             throw new Error("E-mail ou senha inválidos");
         }
 
@@ -25,6 +25,32 @@ export class AuthService {
         }
 
         return this.generateTokens(existingUser);
+    }
+
+    async register(data: RegisterInput) {
+        const { name, email, password } = data;
+
+        const existingUser = await prismaClient.user.findUnique({
+            where: {
+                email: data.email
+            }
+        });
+
+        if (existingUser) {
+            throw new Error("E-mail já cadastrado");
+        }
+
+        const hash = await hashPassword(password);
+
+        const user = await prismaClient.user.create({
+            data: {
+                name,
+                email,
+                password: hash
+            }
+        });
+
+        return this.generateTokens(user);
     }
 
     generateTokens(user: UserModel) {

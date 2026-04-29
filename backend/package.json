@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx --env-file=.env --watch src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.9.0",
+    "class-validator": "^0.15.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "graphql": "^16.13.2",

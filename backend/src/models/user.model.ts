@@ -11,7 +11,7 @@ export class UserModel {
     @Field(() => String)
     email!: string;
 
-    password?: string;
+    password?: string | null;
 
     @Field(() => Date, { nullable: true })
     createdAt?: Date;
