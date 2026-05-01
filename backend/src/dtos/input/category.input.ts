@@ -5,11 +5,12 @@ import { Field, InputType } from "type-graphql";
 export class CreateCategoryInput {
     @Field(() => String)
     @IsNotEmpty({ message: "O título é obrigatório" })
-    @MaxLength(30)
+    @MaxLength(100)
     name!: string;
 
     @Field(() => String, { nullable: true })
     @IsOptional()
+    @MaxLength(1000)
     description!: string;
 
     @Field(() => String)
@@ -29,11 +30,12 @@ export class CreateCategoryInput {
 export class UpdateCategoryInput {
     @Field(() => String, { nullable: true })
     @IsOptional()
-    @MaxLength(30)
+    @MaxLength(100)
     name?: string;
 
     @Field(() => String, { nullable: true })
     @IsOptional()
+    @MaxLength(1000)
     description?: string;
 
     @Field(() => String, { nullable: true })
