@@ -1,7 +1,9 @@
+import { Page } from "@/components/Page";
+
 export function CategoriesPage() {
   return (
-    <>
-        Categories
-    </>
+    <Page>
+      Categories
+    </Page>
   );
 }

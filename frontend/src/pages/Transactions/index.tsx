@@ -1,7 +1,9 @@
+import { Page } from "@/components/Page";
+
 export function TransactionsPage() {
   return (
-    <>
-        Transactions
-    </>
+    <Page>
+      Transactions
+    </Page>
   );
 }

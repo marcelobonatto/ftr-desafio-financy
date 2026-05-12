@@ -1,7 +1,9 @@
+import { Page } from "@/components/Page";
+
 export function ProfilePage() {
   return (
-    <>
-        Profile
-    </>
+    <Page>
+      Profile
+    </Page>
   );
 }

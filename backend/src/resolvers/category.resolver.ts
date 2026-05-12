@@ -40,11 +40,12 @@ export class CategoryResolver {
         return this.categoryService.updateCategory(id, data, user.id);
     }
 
-    @Mutation(() => CategoryModel)
+    @Mutation(() => Boolean)
     async deleteCategory(
         @Arg("id", () => String) id: String,
         @GqlUser() user: UserModel
     ) {
-        return this.categoryService.deleteCategory(id, user.id);
+        await this.categoryService.deleteCategory(id, user.id);
+        return true;
     }
 }
