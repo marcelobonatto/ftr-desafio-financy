@@ -25,33 +25,33 @@
   --color-success: #19AD70;
 
   /* Color System para Categorias */
-  --color-category-blue-dark: #1D4ED8;
-  --color-category-blue-base: #2563EB;
-  --color-category-blue-light: #DBEAFE;
+  --color-blue-dark: #1D4ED8;
+  --color-blue-base: #2563EB;
+  --color-blue-light: #DBEAFE;
 
-  --color-category-purple-dark: #7E22CE;
-  --color-category-purple-base: #9333EA;
-  --color-category-purple-light: #F3E8FF;
+  --color-purple-dark: #7E22CE;
+  --color-purple-base: #9333EA;
+  --color-purple-light: #F3E8FF;
 
-  --color-category-pink-dark: #BE185D;
-  --color-category-pink-base: #DB2777;
-  --color-category-pink-light: #FCE7F3;
+  --color-pink-dark: #BE185D;
+  --color-pink-base: #DB2777;
+  --color-pink-light: #FCE7F3;
 
-  --color-category-red-dark: #B91C1C;
-  --color-category-red-base: #DC2626;
-  --color-category-red-light: #FEE2E2;
+  --color-red-dark: #B91C1C;
+  --color-red-base: #DC2626;
+  --color-red-light: #FEE2E2;
 
-  --color-category-orange-dark: #C2410C;
-  --color-category-orange-base: #EA580C;
-  --color-category-orange-light: #FFEDD5;
+  --color-orange-dark: #C2410C;
+  --color-orange-base: #EA580C;
+  --color-orange-light: #FFEDD5;
 
-  --color-category-yellow-dark: #A16207;
-  --color-category-yellow-base: #CA8A04;
-  --color-category-yellow-light: #F7F3CA;
+  --color-yellow-dark: #A16207;
+  --color-yellow-base: #CA8A04;
+  --color-yellow-light: #F7F3CA;
 
-  --color-category-green-dark: #15803D;
-  --color-category-green-base: #16A34A;
-  --color-category-green-light: #E0FAE9;
+  --color-green-dark: #15803D;
+  --color-green-base: #16A34A;
+  --color-green-light: #E0FAE9;
 
   /* Tipografia */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;

@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './global.css';
 import App from './App.tsx';
-import { apolloClient } from './lib/apollo.ts';
+import { apolloClient } from '@/lib/graphql/apollo.ts';
 import { ApolloProvider } from '@apollo/client/react';
 
 createRoot(document.getElementById('root')!).render(
