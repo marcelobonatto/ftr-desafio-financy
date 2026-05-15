@@ -1,18 +1,11 @@
 import { useState, type SubmitEventHandler } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { z } from "zod";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeClosed, Lock, Mail, UserRoundPlus } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NavLink } from "react-router-dom";
-
-const formSchema = z.object({
-  email: z.email("E-mail inválido"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
-});
 
 export function LoginPage() {
 
@@ -27,7 +20,7 @@ export function LoginPage() {
     const password = form.password.value;
 
     console.log(email, password);
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] items-center justify-center gap-6">
@@ -59,6 +52,7 @@ export function LoginPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Senha</Label>
+
               <InputGroup>
                 <InputGroupInput id="password" type={showPassword ? "text" : "password"} placeholder="Digite sua senha" />
 
