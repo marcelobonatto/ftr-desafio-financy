@@ -2,24 +2,50 @@ import { useState, type SubmitEventHandler } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeClosed, Lock, Mail, UserRoundPlus } from "lucide-react";
+import { Eye, EyeClosed, Loader2, Lock, LogIn, Mail, UserRoundPlus } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth";
+import { toast } from "sonner";
 
 export function LoginPage() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
 
+  const login = useAuthStore((state) => state.login);
+
+  const navigate = useNavigate();
+
   const handleSubmit: SubmitEventHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
+    try {
+      const loginMutate = await login({
+        email,
+        password
+      });
 
-    console.log(email, password);
+      if (loginMutate) {
+        toast.success("Login realizado com sucesso!");
+      }
+
+    } catch (error) {
+      toast.error("Falha ao realizar o login!");
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = () => {
+    navigate("/signup");
   };
 
   return (
@@ -42,7 +68,9 @@ export function LoginPage() {
               <Label htmlFor="email">E-mail</Label>
 
               <InputGroup>
-                <InputGroupInput id="email" type="email" placeholder="mail@exemplo.com" />
+                <InputGroupInput id="email" type="email" placeholder="mail@exemplo.com"
+                  value={email} onChange={(e) => setEmail(e.target.value)} required
+                  disabled={loading} />
 
                 <InputGroupAddon>
                   <Mail />
@@ -54,7 +82,10 @@ export function LoginPage() {
               <Label htmlFor="password">Senha</Label>
 
               <InputGroup>
-                <InputGroupInput id="password" type={showPassword ? "text" : "password"} placeholder="Digite sua senha" />
+                <InputGroupInput id="password" type={showPassword ? "text" : "password"}
+                  placeholder="Digite sua senha" value={password}
+                  onChange={(e) => setPassword(e.target.value)} required
+                  disabled={loading} />
 
                 <InputGroupAddon>
                   <Lock />
@@ -74,13 +105,27 @@ export function LoginPage() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Checkbox checked={remember} onCheckedChange={setRemember} /> Lembrar-me
+                <Checkbox checked={remember} onCheckedChange={setRemember} disabled={loading} /> Lembrar-me
               </div>
-              <NavLink to="/" className="text-brand-base text-sm hover:underline">Recuperar senha</NavLink>
+              {loading ? (
+                <span className="text-brand-base text-sm">Recuperar senha</span>
+              ) : (
+                <NavLink to="/" className="text-brand-base text-sm hover:underline">
+                  Recuperar senha
+                </NavLink>
+              )}
             </div>
 
-            <Button type="submit" className="w-full bg-brand-base">
-              Entrar
+            <Button type="submit" variant="solid" size="md" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2 h-4 w-4" /> Entrando...
+                </>
+              ) : (
+                <>
+                  <LogIn className="mr-2 h-4 w-4" /> Entrar
+                </>
+              )}
             </Button>
           </form>
 
@@ -94,7 +139,9 @@ export function LoginPage() {
             Ainda não tem uma conta?
           </div>
 
-          <Button type="button" className="w-full bg-white border border-gray-300 text-gray-700">
+          <Button type="button" variant="outline" size="md" className="w-full"
+            disabled={loading} onClick={handleRegister}>
+
             <UserRoundPlus className="mr-2 h-4 w-4" /> Criar conta
           </Button>
         </CardContent>

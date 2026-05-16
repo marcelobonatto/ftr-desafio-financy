@@ -3,16 +3,49 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FieldDescription } from "@/components/ui/field";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeClosed, Lock, LogIn, Mail, User } from "lucide-react";
+import { useAuthStore } from "@/stores/auth";
+import { Eye, EyeClosed, Loader2, Lock, LogIn, Mail, User, UserRoundPlus } from "lucide-react";
 import { useState, type SubmitEventHandler } from "react";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export function SignupPage() {
 
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
+
+  const signup = useAuthStore((state) => state.signup);
+
+  const navigate = useNavigate();
 
   const handleSubmit: SubmitEventHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    try {
+      const signupMutate = await signup({
+        name,
+        email,
+        password
+      });
+
+      if (signupMutate) {
+        toast.success("Cadastro realizado com sucesso!");
+      }
+    } catch (error) {
+      toast.error("Falha ao realizar o cadastro!");
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -35,7 +68,9 @@ export function SignupPage() {
               <Label htmlFor="nome">Nome completo</Label>
 
               <InputGroup>
-                <InputGroupInput id="nome" type="text" placeholder="Seu nome completo" />
+                <InputGroupInput id="nome" type="text" placeholder="Seu nome completo"
+                  value={name} onChange={(e) => setName(e.target.value)}
+                  disabled={loading} required />
 
                 <InputGroupAddon>
                   <User />
@@ -47,7 +82,9 @@ export function SignupPage() {
               <Label htmlFor="email">E-mail</Label>
 
               <InputGroup>
-                <InputGroupInput id="email" type="email" placeholder="mail@exemplo.com" />
+                <InputGroupInput id="email" type="email" placeholder="mail@exemplo.com"
+                  value={email} onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading} required />
 
                 <InputGroupAddon>
                   <Mail />
@@ -59,7 +96,10 @@ export function SignupPage() {
               <Label htmlFor="password">Senha</Label>
 
               <InputGroup>
-                <InputGroupInput id="password" type={showPassword ? "text" : "password"} placeholder="Digite sua senha" />
+                <InputGroupInput id="password" type={showPassword ? "text" : "password"}
+                  placeholder="Digite sua senha"
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading} required />
 
                 <InputGroupAddon>
                   <Lock />
@@ -78,8 +118,16 @@ export function SignupPage() {
               <FieldDescription>A senha deve ter no mínimo 8 caracteres</FieldDescription>
             </div>
 
-            <Button type="submit" className="w-full bg-brand-base">
-              Cadastrar
+            <Button type="submit" size="md" variant="solid" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin mr-2 h-4 w-4" /> Cadastrando...
+                </>
+              ) : (
+                <>
+                  <UserRoundPlus className="mr-2 h-4 w-4" /> Cadastrar
+                </>
+              )}
             </Button>
           </form>
 
@@ -93,7 +141,9 @@ export function SignupPage() {
             Já tem uma conta?
           </div>
 
-          <Button type="button" className="w-full bg-white border border-gray-300 text-gray-700">
+          <Button type="button" variant="outline" size="md" className="w-full" disabled={loading}
+            onClick={handleLogin}>
+
             <LogIn className="mr-2 h-4 w-4" /> Fazer login
           </Button>
         </CardContent>
