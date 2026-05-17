@@ -7,20 +7,32 @@ import { Label } from "@/components/ui/label";
 import { UserAvatar } from "@/components/UserAvatar";
 import { UPDATE_USER } from "@/lib/graphql/mutations/Users";
 import { useAuthStore } from "@/stores/auth";
-import type { User } from "@/types";
 import { useMutation } from "@apollo/client/react";
-import { Loader2, LogOut, Mail, Save, User, User } from "lucide-react";
+import { Loader2, LogOut, Mail, Save, User } from "lucide-react";
 import { useEffect, useState, type SubmitEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+type UpdateUserMutationData = {
+  updateUser: {
+    id: string;
+    name: string;
+    email: string;
+  }
+}
+
+type UpdateUserVariables = {
+  id: string;
+  data: {
+    name: string;
+  }
+}
+
 export function ProfilePage() {
 
-  const { user, logout } = useAuthStore();
+  const { user, replaceName, logout } = useAuthStore();
   const navigate = useNavigate();
-
   const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user?.name) {
@@ -28,27 +40,38 @@ export function ProfilePage() {
     }
   }, [user]);
 
-  //TODO: Implementar a atualização de perfil
+  const [updateUser, { loading }] = useMutation<
+    UpdateUserMutationData,
+    UpdateUserVariables
+  >(UPDATE_USER, {
+    onCompleted: (res: UpdateUserMutationData) => {
+      const updatedUser = res.updateUser;
+
+      if (updatedUser && user) {
+        replaceName(updatedUser.name);
+        toast.success('Perfil atualizado com sucesso!');
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Não foi possível salvar as alterações.');
+    }
+  });
+
   const handleSubmit: SubmitEventHandler = async (e) => {
     e.preventDefault();
-    // setLoading(true);
 
-    // try {
-    //   const update = await useAuthStore.getState().updateProfile({
-    //     name,
-    //     email,
-    //   });
+    if (!user?.id) return;
+    if (!name.trim()) {
+      toast.error("O nome não pode ficar em branco.");
+      return;
+    }
 
-    //   if (update) {
-    //     toast.success("Perfil atualizado com sucesso!");
-    //   }
-    // } catch (error) {
-    //   toast.error("Falha ao atualizar perfil!");
-    // } finally {
-    //   setLoading(false);
-    // }
-
-    toast.success('Alterações salvas com sucesso (Simulado)!');
+    await updateUser({
+      variables: {
+        id: user.id,
+        data: { name }
+      }
+    });
   };
 
   const handleLogout = () => {
