@@ -2,13 +2,14 @@ import { BadgeIcon } from "@/components/BadgeIcon";
 import { BadgeText } from "@/components/BadgeText";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import type { CategoryColor } from "@/types";
 import { SquarePen, Trash2, type LucideIcon } from "lucide-react";
 
 interface CategoryCardProps {
     name: string;
     description: string;
     count: number;
-    color: ;
+    color: CategoryColor;
     icon: LucideIcon;
     className?: string;
     onEdit: () => void;
