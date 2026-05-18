@@ -4,9 +4,21 @@ import { useState } from "react";
 import { ArrowUpDown, BriefcaseBusiness, CarFront, HeartPulse, PiggyBank, ShoppingCart, Tag, Ticket, ToolCase, Utensils } from "lucide-react";
 import { CategoryStatCard } from "@/pages/Categories/components/CategoryStatCard";
 import { CategoryCard } from "./components/CategoryCard";
+import { CategoryDialog } from "./components/CategoryDialog";
 
 export function CategoriesPage() {
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleCreateCategory = () => {
+    setSelectedCategory(null);
+    setShowDialog(true);
+  };
+
+  const handleEditCategory = (category) => {
+    setSelectedCategory(category);
+    setShowDialog(true);
+  };
 
   return (
     <Page>
@@ -14,13 +26,8 @@ export function CategoriesPage() {
         title="Categorias"
         description="Organize suas transações por categorias"
         buttonLabel="Nova categoria"
-        onButtonClick={() => setShowCreateDialog(true)}
+        onButtonClick={handleCreateCategory}
       />
-
-      {/* <CreateCategoryDialog
-        open={showCreateDialog}
-        onClose={() => setShowCreateDialog(false)}
-      /> */}
 
       <div className="flex gap-6 mt-6">
         <CategoryStatCard
@@ -120,6 +127,12 @@ export function CategoriesPage() {
           onDelete={() => { }}
         />
       </div>
+
+      <CategoryDialog
+        open={showDialog}
+        onOpenChange={setShowDialog}
+        categoryToEdit={selectedCategory}
+      />
     </Page>
   );
 }
