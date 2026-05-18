@@ -2,9 +2,10 @@ import { formatCurrency } from "@/utils";
 import { BadgeIcon } from "@/components/BadgeIcon";
 import { CircleArrowDown, CircleArrowUp, type LucideIcon } from "lucide-react";
 import { BadgeText } from "@/components/BadgeText";
+import type { CategoryColor } from "@/types";
 
 interface TransactionItemProps {
-    color: 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'yellow' | 'green';
+    color: CategoryColor;
     icon: LucideIcon;
     title: string;
     date: string;

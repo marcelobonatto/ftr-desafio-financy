@@ -1,17 +1,21 @@
 import { colorVariants } from "@/constants/colors";
-import type { LucideIcon } from "lucide-react";
+import * as Icons from "lucide-react";
+import type { CategoryColor } from "@/types";
 
 interface BadgeIconProps {
-    color: 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'yellow' | 'green';
-    icon: LucideIcon;
+    color: CategoryColor;
+    iconName?: string;
+    icon?: Icons.LucideIcon;
 }
 
-export function BadgeIcon({ color, icon: Icon }: BadgeIconProps) {
+export function BadgeIcon({ color, iconName, icon: Icon }: BadgeIconProps) {
+
     const selectedColorClass = colorVariants[color];
+    const IconComponent = Icon || (Icons as any)[iconName] || Icons.Tag;
 
     return (
         <div className={`${selectedColorClass} h-10 w-10 rounded-md shrink-0 flex items-center justify-center`}>
-            <Icon size={16} />
+            <IconComponent size={16} />
         </div>
     );
 }

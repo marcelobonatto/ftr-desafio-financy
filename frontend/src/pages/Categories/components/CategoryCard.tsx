@@ -8,7 +8,7 @@ interface CategoryCardProps {
     name: string;
     description: string;
     count: number;
-    color: 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'yellow' | 'green';
+    color: ;
     icon: LucideIcon;
     className?: string;
     onEdit: () => void;

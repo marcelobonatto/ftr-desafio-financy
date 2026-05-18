@@ -1,7 +1,8 @@
 import { colorVariants } from "@/constants/colors";
+import type { CategoryColor } from "@/types";
 
 interface BadgeTextProps {
-    color: 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'yellow' | 'green';
+    color: CategoryColor;
     text: string;
 }
 

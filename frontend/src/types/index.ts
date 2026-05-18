@@ -16,3 +16,5 @@ export interface LoginInput {
   email: string
   password: string
 }
+
+export type CategoryColor = 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'yellow' | 'green';

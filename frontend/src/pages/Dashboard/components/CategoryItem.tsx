@@ -1,8 +1,9 @@
 import { BadgeText } from "@/components/BadgeText";
 import { formatCurrency } from "@/utils";
+import type { CategoryColor } from "@/types";
 
 interface CategoryItemProps {
-    color: 'blue' | 'purple' | 'pink' | 'red' | 'orange' | 'yellow' | 'green';
+    color: CategoryColor;
     name: string;
     count: number;
     amount: number;
