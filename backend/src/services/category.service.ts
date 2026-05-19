@@ -52,7 +52,9 @@ export class CategoryService {
         return {
             totalCategories,
             totalTransactions,
-            mostUsedCategoryName: mostUsedCategory?.name || "Nenhuma"
+            mostUsedCategoryName: mostUsedCategory?.name || "Nenhuma",
+            mostUsedCategoryIcon: mostUsedCategory?.icon || "Circle",
+            mostUsedCategoryColor: mostUsedCategory?.color || "gray",
         }
     }
 

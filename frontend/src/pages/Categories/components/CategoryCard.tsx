@@ -3,25 +3,29 @@ import { BadgeText } from "@/components/BadgeText";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import type { CategoryColor } from "@/types";
-import { SquarePen, Trash2, type LucideIcon } from "lucide-react";
+import { SquarePen, Trash2 } from "lucide-react";
+import * as Icons from "lucide-react";
 
 interface CategoryCardProps {
     name: string;
     description: string;
     count: number;
     color: CategoryColor;
-    icon: LucideIcon;
+    icon?: Icons.LucideIcon;
+    iconName?: string;
     className?: string;
     onEdit: () => void;
     onDelete: () => void;
 }
 
-export function CategoryCard({ name, description, count, color, icon: Icon, className, onEdit, onDelete }: CategoryCardProps) {
+export function CategoryCard({ name, description, count, color, icon: Icon, iconName, className, onEdit, onDelete }: CategoryCardProps) {
+    const IconComponent = Icon || (Icons as any)[iconName] || Icons.Tag;
+
     return (
         <Card className={className}>
             <CardHeader className="flex items-center justify-between w-full h-10">
                 <div className="h-10 w-10 flex items-center justify-center">
-                    <BadgeIcon icon={Icon} color={color} />
+                    <BadgeIcon icon={IconComponent} color={color} />
                 </div>
                 <div className="flex items-center gap-1">
                     <Button variant="outline" size="icon" onClick={onDelete}>

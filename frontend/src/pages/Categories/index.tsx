@@ -1,14 +1,44 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Page } from "@/components/Page";
 import { useState } from "react";
-import { ArrowUpDown, BriefcaseBusiness, CarFront, HeartPulse, PiggyBank, ShoppingCart, Tag, Ticket, ToolCase, Utensils } from "lucide-react";
+import { ArrowUpDown, BriefcaseBusiness, CarFront, HeartPulse, Loader2, PiggyBank, ShoppingCart, Tag, Ticket, ToolCase, Utensils } from "lucide-react";
 import { CategoryStatCard } from "@/pages/Categories/components/CategoryStatCard";
 import { CategoryCard } from "./components/CategoryCard";
 import { CategoryDialog } from "./components/CategoryDialog";
+import { useQuery } from "@apollo/client/react";
+import { GET_CATEGORIES, GET_CATEGORY_STATISTICS } from "@/lib/graphql/queries/Categories";
+import type { CategoryColor } from "@/types";
+import { toast } from "sonner";
+
+interface CategoryStatsData {
+  getCategoryStatistics: {
+    totalCategories: number;
+    totalTransactions: number;
+    mostUsedCategoryName: string;
+    mostUsedCategoryIcon: string;
+    mostUsedCategoryColor: string;
+  };
+}
+
+interface CategoryItem {
+  id: string;
+  color: string;
+  icon: string;
+  name: string;
+  description: string;
+  transactionCount: number;
+}
+
+interface CategoriesListData {
+  categories: CategoryItem[];
+}
 
 export function CategoriesPage() {
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryItem | null>(null);
+
+  const { data: statsData, loading: statsLoading } = useQuery<CategoryStatsData>(GET_CATEGORY_STATISTICS);
+  const { data: listData, loading: listLoading, refetch: refetchList } = useQuery<CategoriesListData>(GET_CATEGORIES);
 
   const handleCreateCategory = () => {
     setSelectedCategory(null);
@@ -19,6 +49,19 @@ export function CategoriesPage() {
     setSelectedCategory(category);
     setShowDialog(true);
   };
+
+  if (statsLoading || listLoading) {
+    return (
+      <Page>
+        <div className="w-full h-[400px] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-brand-base" />
+        </div>
+      </Page>
+    );
+  }
+
+  const stats = statsData?.getCategoryStatistics;
+  const categoriesList = listData?.categories ?? [];
 
   return (
     <Page>
@@ -32,101 +75,47 @@ export function CategoriesPage() {
       <div className="flex gap-6 mt-6">
         <CategoryStatCard
           icon={Tag}
-          value="8"
+          value={stats?.totalCategories ?? 0}
           description="Total de categorias"
           color="text-gray-700"
           className="flex-1"
         />
         <CategoryStatCard
           icon={ArrowUpDown}
-          value="27"
+          value={stats?.totalTransactions ?? 0}
           description="Total de transações"
           color="text-purple-base"
           className="flex-1"
         />
         <CategoryStatCard
-          icon={Utensils}
-          value="Alimentação"
+          iconName={stats?.mostUsedCategoryIcon}
+          value={stats?.mostUsedCategoryName}
           description="Categoria mais utilizada"
-          color="text-blue-base"
+          color={`text-${stats?.mostUsedCategoryColor}-base`}
           className="flex-1"
         />
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mt-6">
-        <CategoryCard
-          name="Alimentação"
-          description="Restaurantes, delivery e refeições"
-          count={10}
-          color="blue"
-          icon={Utensils}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Entretenimento"
-          description="Cinema, jogos e lazer"
-          count={2}
-          color="pink"
-          icon={Ticket}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Investimento"
-          description="Aplicações e retornos financeiros"
-          count={1}
-          color="green"
-          icon={PiggyBank}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Mercado"
-          description="Compras de supermercados e mantimentos"
-          count={3}
-          color="orange"
-          icon={ShoppingCart}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Salário"
-          description="Renda mensal e bonificações"
-          count={3}
-          color="green"
-          icon={BriefcaseBusiness}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Saúde"
-          description="Medicamentos, consultas e exames"
-          count={0}
-          color="red"
-          icon={HeartPulse}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Transporte"
-          description="Gasolina, transporte público e viagens"
-          count={8}
-          color="purple"
-          icon={CarFront}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-        <CategoryCard
-          name="Utilidades"
-          description="Energia, água, internet e telefone"
-          count={7}
-          color="yellow"
-          icon={ToolCase}
-          onEdit={() => { }}
-          onDelete={() => { }}
-        />
-      </div>
+      {categoriesList.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-lg border border-gray-200 mt-4">
+          <p className="text-gray-400 italic">Nenhuma categoria cadastrada ainda. Clique em "Nova categoria" para começar!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-6 pt-4">
+          {categoriesList.map((category) => (
+            <CategoryCard
+              key={category.id}
+              name={category.name}
+              description={category.description}
+              count={category.transactionCount}
+              color={category.color as CategoryColor}
+              iconName={category.icon}
+              onEdit={() => handleEditCategory(category)}
+              onDelete={() => toast.error(`Deletar ${category.name} (Próximo passo)`)}
+            />
+          ))}
+        </div>
+      )}
 
       <CategoryDialog
         open={showDialog}

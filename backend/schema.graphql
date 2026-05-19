@@ -4,6 +4,7 @@
 # -----------------------------------------------
 
 type CategoryDashboardOutput {
+  mostUsedCategoryIcon: String!
   mostUsedCategoryName: String!
   totalCategories: Float!
   totalTransactions: Float!
