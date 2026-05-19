@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Page } from "@/components/Page";
 import { useState } from "react";
-import { ArrowUpDown, BriefcaseBusiness, CarFront, HeartPulse, Loader2, PiggyBank, ShoppingCart, Tag, Ticket, ToolCase, Utensils } from "lucide-react";
+import { ArrowUpDown, Loader2, Tag } from "lucide-react";
 import { CategoryStatCard } from "@/pages/Categories/components/CategoryStatCard";
 import { CategoryCard } from "./components/CategoryCard";
 import { CategoryDialog } from "./components/CategoryDialog";
@@ -22,15 +22,17 @@ interface CategoryStatsData {
 
 interface CategoryItem {
   id: string;
-  color: string;
-  icon: string;
   name: string;
   description: string;
+  icon: string;
+  color: string;
   transactionCount: number;
 }
 
 interface CategoriesListData {
-  categories: CategoryItem[];
+  listCategories: {
+    categories: CategoryItem[];
+  }
 }
 
 export function CategoriesPage() {
@@ -61,7 +63,7 @@ export function CategoriesPage() {
   }
 
   const stats = statsData?.getCategoryStatistics;
-  const categoriesList = listData?.categories ?? [];
+  const categoriesList = listData?.listCategories ?? [];
 
   return (
     <Page>
@@ -121,6 +123,7 @@ export function CategoriesPage() {
         open={showDialog}
         onOpenChange={setShowDialog}
         categoryToEdit={selectedCategory}
+        onSuccess={refetchList}
       />
     </Page>
   );

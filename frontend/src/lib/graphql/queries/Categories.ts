@@ -7,6 +7,7 @@ query GetCategoryStatistics {
     totalTransactions
     mostUsedCategoryName
     mostUsedCategoryIcon
+    mostUsedCategoryColor
   }
 }`;
 
@@ -14,10 +15,10 @@ export const GET_CATEGORIES = gql`
 query ListCategories {
   listCategories {
     id
-    color
-    icon
     name
     description
+    icon
+    color
     transactionCount
   }
 }`;

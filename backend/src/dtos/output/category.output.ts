@@ -13,4 +13,7 @@ export class CategoryDashboardOutput {
 
     @Field(() => String)
     mostUsedCategoryIcon!: string;
+
+    @Field(() => String)
+    mostUsedCategoryColor!: string;
 }

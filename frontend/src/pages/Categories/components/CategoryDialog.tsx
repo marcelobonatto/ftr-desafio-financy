@@ -3,8 +3,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CREATE_CATEGORY, UPDATE_CATEGORY } from "@/lib/graphql/mutations/Categories";
+import { GET_CATEGORIES, GET_CATEGORY_STATISTICS } from "@/lib/graphql/queries/Categories";
+import { useMutation } from "@apollo/client/react";
 import * as Icons from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState, type SubmitEventHandler } from "react";
+import { toast } from "sonner";
 
 const ICON_OPTIONS = [
     { name: "BriefcaseBusiness", icon: Icons.BriefcaseBusiness },
@@ -39,9 +44,10 @@ interface CategoryDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     categoryToEdit?: any | null;
+    onSuccess?: () => void;
 }
 
-export function CategoryDialog({ open, onOpenChange, categoryToEdit }: CategoryDialogProps) {
+export function CategoryDialog({ open, onOpenChange, categoryToEdit, onSuccess }: CategoryDialogProps) {
     const isEditing = !!categoryToEdit;
 
     const [title, setTitle] = useState("");
@@ -63,9 +69,60 @@ export function CategoryDialog({ open, onOpenChange, categoryToEdit }: CategoryD
         }
     }, [categoryToEdit, open]);
 
+    const [createCategory, { loading: createLoading }] = useMutation(CREATE_CATEGORY, {
+        refetchQueries: [{ query: GET_CATEGORY_STATISTICS }],
+        onCompleted: () => {
+            toast.success("Categoria criada com sucesso!");
+            onSuccess?.();
+            onOpenChange(false);
+        },
+        onError: (error) => {
+            toast.error(error.message || "Erro ao criar categoria.");
+        }
+    });
+
+    const [updateCategory, { loading: updateLoading }] = useMutation(UPDATE_CATEGORY, {
+        onCompleted: () => {
+            toast.success("Categoria atualizada com sucesso!");
+            onSuccess?.();
+            onOpenChange(false);
+        },
+        onError: (error) => {
+            toast.error(error.message || "Erro ao atualizar categoria.");
+        }
+    });
+
+    const isMutating = createLoading || updateLoading;
+
     const handleSubmit: SubmitEventHandler = async (e) => {
         e.preventDefault();
-        onOpenChange(false);
+
+        if (!title.trim()) {
+            toast.error("Título da categoria é obrigatório.");
+            return;
+        }
+
+        const payload = {
+            name: title.trim(),
+            description: description.trim() || null,
+            icon: selectedIcon,
+            color: selectedColor
+        };
+
+        if (isEditing && categoryToEdit) {
+            await updateCategory({
+                variables: {
+                    id: categoryToEdit.id,
+                    data: payload
+                }
+            });
+        } else {
+            await createCategory({
+                variables: {
+                    data: payload
+                }
+            });
+        }
     };
 
     return (
@@ -85,13 +142,15 @@ export function CategoryDialog({ open, onOpenChange, categoryToEdit }: CategoryD
                     <div className="space-y-2">
                         <Label htmlFor="title">Título</Label>
                         <Input id="title" type="text" placeholder="Ex: Alimentação"
-                            value={title} onChange={(e) => setTitle(e.target.value)} required />
+                            value={title} onChange={(e) => setTitle(e.target.value)}
+                            disabled={isMutating} required />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="description">Descrição</Label>
                         <Input id="description" type="text" placeholder="Descrição da categoria"
-                            value={description} onChange={(e) => setDescription(e.target.value)} />
+                            value={description} onChange={(e) => setDescription(e.target.value)}
+                            disabled={isMutating} />
                         <FieldDescription className="text-xs">Opcional</FieldDescription>
                     </div>
 
@@ -103,12 +162,9 @@ export function CategoryDialog({ open, onOpenChange, categoryToEdit }: CategoryD
                                 const isSelected = selectedIcon === icon.name;
 
                                 return (
-                                    <Button
-                                        key={icon.name}
-                                        type="button"
-                                        variant="outline"
-                                        size="icon"
+                                    <Button key={icon.name} type="button" variant="outline" size="icon"
                                         onClick={() => setSelectedIcon(icon.name)}
+                                        disabled={isMutating}
                                         className={`h-10 w-10 rounded-md border flex items-center justify-center transition-all bg-white hover:bg-gray-50
                                                    ${isSelected ? "border-brand-base ring-1 ring-brand-base text-brand-base" : "border-gray-300 text-gray-600"}`}
                                     >
@@ -126,12 +182,9 @@ export function CategoryDialog({ open, onOpenChange, categoryToEdit }: CategoryD
                                 const isSelected = selectedColor === color.name;
 
                                 return (
-                                    <Button
-                                        key={color.name}
-                                        type="button"
-                                        variant="outline"
-                                        size="icon"
+                                    <Button key={color.name} type="button" variant="outline" size="icon"
                                         onClick={() => setSelectedColor(color.name)}
+                                        disabled={isMutating}
                                         className={`h-8 w-12 rounded-md border flex items-center justify-center transition-all bg-white hover:bg-gray-50
                                                    ${isSelected ? "border-brand-base ring-1 ring-brand-base text-brand-base" : "border-gray-300 text-gray-600"}`}
                                     >
@@ -143,8 +196,10 @@ export function CategoryDialog({ open, onOpenChange, categoryToEdit }: CategoryD
                     </div>
 
                     <DialogFooter className="pt-2">
-                        <Button type="submit" variant="solid" size="md" className="w-full">
-                            Salvar
+                        <Button type="submit" variant="solid" size="md" className="w-full"
+                            disabled={isMutating}>
+                            {isMutating && <Loader2 className="h-4 w-4 animate-spin" />}
+                            {isMutating ? "Salvando..." : "Salvar"}
                         </Button>
                     </DialogFooter>
                 </form>
