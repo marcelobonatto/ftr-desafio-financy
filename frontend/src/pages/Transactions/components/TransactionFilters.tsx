@@ -5,6 +5,14 @@ import { Search } from "lucide-react";
 
 interface TransactionFiltersProps {
     className?: string;
+    search: string;
+    categoryId: string;
+    type: string;
+    period: string;
+    onSearchChange: (search: string) => void;
+    onCategoryChange: (categoryId: string) => void;
+    onTypeChange: (type: string) => void;
+    onPeriodChange: (period: string) => void;
 }
 
 export function TransactionFilters({ className }: TransactionFiltersProps) {

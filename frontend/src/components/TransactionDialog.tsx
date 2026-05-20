@@ -7,42 +7,50 @@ import { Input } from "./ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
+import { TransactionDialogForm } from "./TransactionDialogForm";
 
 interface TransactionDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     transactionToEdit?: any | null;
+    onSuccess?: () => void;
 }
 
-export function TransactionDialog({ open, onOpenChange, transactionToEdit }: TransactionDialogProps) {
+export function TransactionDialog({
+    open,
+    onOpenChange,
+    transactionToEdit,
+    onSuccess
+}: TransactionDialogProps) {
     const isEditing = !!transactionToEdit;
 
-    const [type, setType] = useState<"expense" | "income">("expense");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [amount, setAmount] = useState("0,00");
-    const [category, setCategory] = useState("");
+    // const [type, setType] = useState<"expense" | "income">("expense");
+    // const [description, setDescription] = useState("");
+    // const [date, setDate] = useState("");
+    // const [amount, setAmount] = useState("0,00");
+    // const [category, setCategory] = useState("");
 
-    useEffect(() => {
-        if (transactionToEdit) {
-            setType(transactionToEdit.type === "income" ? "income" : "expense");
-            setDescription(transactionToEdit.title ?? "");
-            setDate(transactionToEdit.date ?? "");
-            setAmount(transactionToEdit.amount?.toString() ?? "0,00");
-            setCategory(transactionToEdit.category ?? "");
-        } else {
-            setType("expense");
-            setDescription("");
-            setDate("");
-            setAmount("0,00");
-            setCategory("");
-        }
-    }, [transactionToEdit]);
+    // useEffect(() => {
+    //     if (transactionToEdit) {
+    //         setType(transactionToEdit.type === "income" ? "income" : "expense");
+    //         setDescription(transactionToEdit.title ?? "");
+    //         setDate(transactionToEdit.date ?? "");
+    //         setAmount(transactionToEdit.amount?.toString() ?? "0,00");
+    //         setCategory(transactionToEdit.category ?? "");
+    //     } else {
+    //         setType("expense");
+    //         setDescription("");
+    //         setDate("");
+    //         setAmount("0,00");
+    //         setCategory("");
+    //     }
+    // }, [transactionToEdit]);
 
-    const handleSubmit: SubmitEventHandler = (e) => {
-        e.preventDefault();
-        onOpenChange(false);
-    }
+    // const handleSubmit: SubmitEventHandler = (e) => {
+    //     e.preventDefault();
+    //     onSaveSuccess?.();
+    //     onOpenChange(false);
+    // }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -57,7 +65,7 @@ export function TransactionDialog({ open, onOpenChange, transactionToEdit }: Tra
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="mt-2 space-y-5">
+                {/* <form onSubmit={handleSubmit} className="mt-2 space-y-5">
                     <div className="grid grid-cols-2 gap-2 border border-gray-200 rounded-xl overflow-hidden p-2 bg-white">
                         <Button
                             type="button"
@@ -151,7 +159,16 @@ export function TransactionDialog({ open, onOpenChange, transactionToEdit }: Tra
                             Salvar
                         </Button>
                     </DialogFooter>
-                </form>
+                </form> */}
+
+                {open && (
+                    <TransactionDialogForm
+                        key={transactionToEdit?.id ?? "new"}
+                        transactionToEdit={transactionToEdit}
+                        onOpenChange={onOpenChange}
+                        onSuccess={onSuccess}
+                    />
+                )}
             </DialogContent>
         </Dialog>
     );

@@ -1,6 +1,34 @@
 import { IsIn, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, Int } from "type-graphql";
 import { TransactionType } from "../../../generated/prisma/enums";
+
+@InputType()
+export class ListTransactionsInput {
+    @Field(() => String, { nullable: true })
+    @IsOptional()
+    description?: string;
+
+    @Field(() => TransactionType, { nullable: true })
+    @IsOptional()
+    @IsIn(["INCOME", "EXPENSE"])
+    type?: TransactionType;
+
+    @Field(() => String, { nullable: true })
+    @IsOptional()
+    categoryId?: string;
+
+    @Field(() => Int)
+    month!: number;
+
+    @Field(() => Int)
+    year!: number;
+
+    @Field(() => Int, { defaultValue: 1 })
+    page!: number;
+
+    @Field(() => Int, { defaultValue: 10 })
+    perPage!: number;
+}
 
 @InputType()
 export class CreateTransactionInput {

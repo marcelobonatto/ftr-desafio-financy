@@ -1,7 +1,7 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Page } from "@/components/Page";
 import { useState } from "react";
-import { ArrowUpDown, Loader2, Tag } from "lucide-react";
+import { ArrowUpDown, Tag } from "lucide-react";
 import { CategoryStatCard } from "@/pages/Categories/components/CategoryStatCard";
 import { CategoryCard } from "./components/CategoryCard";
 import { CategoryDialog } from "./components/CategoryDialog";
@@ -12,6 +12,8 @@ import {
 } from "@/lib/graphql/queries/Categories";
 import type { CategoryColor } from "@/types";
 import { CategoryDialogDelete } from "./components/CategoryDialogDelete";
+import { EmptyState } from "@/components/EmptyState";
+import { LoadingState } from "@/components/LoadingState";
 
 interface CategoryStatsData {
   getCategoryStatistics: {
@@ -70,9 +72,7 @@ export function CategoriesPage() {
   if (statsLoading || listLoading) {
     return (
       <Page>
-        <div className="w-full h-[400px] flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-brand-base" />
-        </div>
+        <LoadingState heightClass="h-[400px]" />
       </Page>
     );
   }
@@ -114,12 +114,10 @@ export function CategoriesPage() {
       </div>
 
       {categoriesList.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200 mt-4">
-          <p className="text-gray-400 italic">
-            Nenhuma categoria cadastrada ainda. Clique em "Nova categoria" para
-            começar!
-          </p>
-        </div>
+        <EmptyState
+          message="Nenhuma categoria cadastrada ainda. Clique em 'Nova categoria' para começar!"
+          className="mt-4"
+        />
       ) : (
         <div className="grid grid-cols-4 gap-6 pt-4">
           {categoriesList.map((category) => (

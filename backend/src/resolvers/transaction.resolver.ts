@@ -1,7 +1,8 @@
 import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { TransactionModel } from "../models/transaction.model";
 import { IsAuth } from "../middlewares/auth.middleware";
-import { CreateTransactionInput, UpdateTransactionInput } from "../dtos/input/transaction.input";
+import { CreateTransactionInput, ListTransactionsInput, UpdateTransactionInput } from "../dtos/input/transaction.input";
+import { PaginatedTransactionsOutput } from "../dtos/output/transaction.output";
 import { UserModel } from "../models/user.model";
 import { GqlUser } from "../graphql/decorators/user.decorator";
 import { TransactionService } from "../services/transaction.service";
@@ -20,9 +21,13 @@ export class TransactionResolver {
         return this.transactionService.createTransaction(data, user.id);
     }
 
-    @Query(() => [TransactionModel])
-    async listTransactions(@GqlUser() user: UserModel): Promise<TransactionModel[]> {
-        return this.transactionService.listTransactions(user.id);
+    @Query(() => PaginatedTransactionsOutput)
+    async listTransactions(
+        @Arg("input", () => ListTransactionsInput) input: ListTransactionsInput,
+        @GqlUser() user: UserModel
+    ): Promise<PaginatedTransactionsOutput> {
+
+        return this.transactionService.listTransactions(user.id, input);
     }
 
     // @Mutation(() => TransactionModel)

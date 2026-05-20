@@ -11,13 +11,13 @@ import {
   GET_CATEGORY_STATISTICS,
   LIST_CATEGORIES,
 } from "@/lib/graphql/queries/Categories";
-import type { CategoryType } from "@/types";
+import type { CategoryDataType } from "@/types";
 import { useMutation } from "@apollo/client/react";
 
 interface CategoryDialogDeleteProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  category: CategoryType | null;
+  category: CategoryDataType | null;
 }
 
 export function CategoryDialogDelete({

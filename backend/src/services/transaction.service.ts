@@ -1,5 +1,5 @@
 import { prismaClient } from "../lib/prisma";
-import type { CreateTransactionInput } from "../dtos/input/transaction.input";
+import type { CreateTransactionInput, ListTransactionsInput } from "../dtos/input/transaction.input";
 import type { UpdateTransactionInput } from "../dtos/input/transaction.input";
 import { TransactionType } from "../../generated/prisma/enums";
 
@@ -23,15 +23,66 @@ export class TransactionService {
         });
     }
 
-    async listTransactions(userId: string) {
-        return prismaClient.transaction.findMany({
-            where: {
-                userId
-            },
-            include: {
-                category: true
+    async listTransactions(userId: string, input: ListTransactionsInput) {
+        const { page, perPage, month, year, description, type, categoryId } = input;
+
+        const skip = (page - 1) * perPage;
+        const take = perPage;
+
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+        const where: any = {
+            userId,
+            date: {
+                gte: startDate,
+                lte: endDate
             }
-        });
+        };
+
+        if (description) {
+            where.description = {
+                contains: description
+            }
+        }
+
+        if (type) {
+            where.type = type
+        }
+
+        if (categoryId) {
+            where.categoryId = categoryId
+        }
+
+        const [items, totalCount] = await Promise.all([
+            prismaClient.transaction.findMany({
+                where,
+                take,
+                skip,
+                orderBy: {
+                    date: "desc"
+                },
+                include: {
+                    category: true
+                }
+            }),
+            prismaClient.transaction.count({
+                where,
+            })
+        ]);
+
+        const totalPages = Math.ceil(totalCount / perPage) || 1;
+
+        return {
+            items,
+            totalCount,
+            pageInfo: {
+                currentPage: page,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
+            }
+        };
     }
 
     async updateTransaction(id: String, data: UpdateTransactionInput, userId: String) {

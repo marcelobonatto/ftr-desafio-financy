@@ -6,10 +6,15 @@ import { Table, TableBody, TableCell, TableFooter, TableHeader, TableRow } from 
 import { formatCurrency } from "@/utils";
 import { CircleArrowDown, CircleArrowUp, SquarePen, Trash2 } from "lucide-react";
 import { TransactionTableFooter } from "./TransactionTableFooter";
-import type { CategoryColor } from "@/types";
+import type { CategoryColor, TransactionDataType } from "@/types";
 
 interface TransactionsTableProps {
     className?: string;
+    transactions: TransactionDataType[];
+    totalCount: number;
+    currentPage: number;
+    onPageChange: (page: number) => void;
+    limit?: number;
 }
 
 const MOCK_TRANSACTIONS = [
@@ -25,7 +30,7 @@ const MOCK_TRANSACTIONS = [
     { id: 10, title: "Almoço", date: "06/05/26", category: "Alimentação", type: "expense", amount: 35.9, color: "blue", icon: "Utensils" }
 ];
 
-export function TransactionsTable({ className }: TransactionsTableProps) {
+export function TransactionsTable({ className, transactions, totalCount, currentPage, onPageChange, limit }: TransactionsTableProps) {
     return (
         <Card className={`${className}`}>
             <CardContent>

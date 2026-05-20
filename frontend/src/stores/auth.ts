@@ -1,7 +1,7 @@
 import { apolloClient } from "@/lib/graphql/apollo";
 import { LOGIN } from "@/lib/graphql/mutations/Login";
 import { REGISTER } from "@/lib/graphql/mutations/Register";
-import type { LoginInput, RegisterInput, UserType } from "@/types";
+import type { LoginInput, RegisterInput, UserDataType } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -9,7 +9,7 @@ type RegisterMutationData = {
     register: {
         token: string
         refreshToken: string
-        user: UserType
+        user: UserDataType
     }
 };
 
@@ -17,13 +17,13 @@ type LoginMutationData = {
     login: {
         token: string
         refreshToken: string
-        user: UserType
+        user: UserDataType
     }
 };
 
 interface AuthState {
     token: string | null;
-    user: UserType | null;
+    user: UserDataType | null;
     isAuthenticated: boolean;
     signup: (data: RegisterInput) => Promise<boolean>;
     login: (data: LoginInput) => Promise<boolean>;

@@ -1,4 +1,4 @@
-import { colorVariants } from "@/constants/colors";
+import { COLOR_VARIANTS } from "@/constants/colors";
 import type { CategoryColor } from "@/types";
 
 interface BadgeTextProps {
@@ -7,7 +7,7 @@ interface BadgeTextProps {
 }
 
 export function BadgeText({ color, text }: BadgeTextProps) {
-    const selectedColorClass = colorVariants[color];
+    const selectedColorClass = COLOR_VARIANTS[color];
 
     return (
         <span className={`inline-flex items-center rounded-full ${selectedColorClass} px-2 py-1 text-xs font-medium tracking-wider whitespace-nowrap`}>

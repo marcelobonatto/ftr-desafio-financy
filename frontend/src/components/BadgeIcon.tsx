@@ -1,4 +1,4 @@
-import { colorVariants } from "@/constants/colors";
+import { COLOR_VARIANTS } from "@/constants/colors";
 import * as Icons from "lucide-react";
 import type { CategoryColor } from "@/types";
 
@@ -10,7 +10,7 @@ interface BadgeIconProps {
 
 export function BadgeIcon({ color, iconName, icon: Icon }: BadgeIconProps) {
 
-    const selectedColorClass = colorVariants[color];
+    const selectedColorClass = COLOR_VARIANTS[color];
     const IconComponent = Icon || (Icons as any)[iconName] || Icons.Tag;
 
     return (

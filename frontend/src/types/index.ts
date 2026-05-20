@@ -1,4 +1,4 @@
-export interface UserType {
+export interface UserDataType {
   id: string;
   name: string;
   email: string;
@@ -26,7 +26,7 @@ export type CategoryColor =
   | "yellow"
   | "green";
 
-export interface CategoryType {
+export interface CategoryDataType {
   id: string;
   name: string;
   description: string;
@@ -35,4 +35,33 @@ export interface CategoryType {
   transactionCount?: number;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface PageInfo {
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface TransactionDataType {
+  id: string;
+  title: string;
+  amount: number;
+  type: "INCOME" | "EXPENSE";
+  date: string;
+  category: {
+    id: string;
+    name: string;
+    color: string;
+    icon: string;
+  }
+}
+
+export interface TransactionsListData {
+  listTransactions?: {
+    items: TransactionDataType[];
+    totalCount: number;
+    pageInfo: PageInfo;
+  };
 }
