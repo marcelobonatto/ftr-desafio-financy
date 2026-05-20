@@ -6,9 +6,12 @@ import { CategoryStatCard } from "@/pages/Categories/components/CategoryStatCard
 import { CategoryCard } from "./components/CategoryCard";
 import { CategoryDialog } from "./components/CategoryDialog";
 import { useQuery } from "@apollo/client/react";
-import { GET_CATEGORIES, GET_CATEGORY_STATISTICS } from "@/lib/graphql/queries/Categories";
+import {
+  LIST_CATEGORIES,
+  GET_CATEGORY_STATISTICS,
+} from "@/lib/graphql/queries/Categories";
 import type { CategoryColor } from "@/types";
-import { toast } from "sonner";
+import { CategoryDialogDelete } from "./components/CategoryDialogDelete";
 
 interface CategoryStatsData {
   getCategoryStatistics: {
@@ -30,26 +33,38 @@ interface CategoryItem {
 }
 
 interface CategoriesListData {
-  listCategories: {
-    categories: CategoryItem[];
-  }
+  listCategories: CategoryItem[];
 }
 
 export function CategoriesPage() {
-  const [showDialog, setShowDialog] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryItem | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const { data: statsData, loading: statsLoading } = useQuery<CategoryStatsData>(GET_CATEGORY_STATISTICS);
-  const { data: listData, loading: listLoading, refetch: refetchList } = useQuery<CategoriesListData>(GET_CATEGORIES);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryItem | null>(
+    null,
+  );
+
+  const { data: statsData, loading: statsLoading } =
+    useQuery<CategoryStatsData>(GET_CATEGORY_STATISTICS);
+  const {
+    data: listData,
+    loading: listLoading,
+    refetch: refetchList,
+  } = useQuery<CategoriesListData>(LIST_CATEGORIES);
 
   const handleCreateCategory = () => {
     setSelectedCategory(null);
-    setShowDialog(true);
+    setShowEditDialog(true);
   };
 
   const handleEditCategory = (category) => {
     setSelectedCategory(category);
-    setShowDialog(true);
+    setShowEditDialog(true);
+  };
+
+  const handleDeleteCategory = (category) => {
+    setSelectedCategory(category);
+    setShowDeleteDialog(true);
   };
 
   if (statsLoading || listLoading) {
@@ -100,7 +115,10 @@ export function CategoriesPage() {
 
       {categoriesList.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg border border-gray-200 mt-4">
-          <p className="text-gray-400 italic">Nenhuma categoria cadastrada ainda. Clique em "Nova categoria" para começar!</p>
+          <p className="text-gray-400 italic">
+            Nenhuma categoria cadastrada ainda. Clique em "Nova categoria" para
+            começar!
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-6 pt-4">
@@ -113,17 +131,23 @@ export function CategoriesPage() {
               color={category.color as CategoryColor}
               iconName={category.icon}
               onEdit={() => handleEditCategory(category)}
-              onDelete={() => toast.error(`Deletar ${category.name} (Próximo passo)`)}
+              onDelete={() => handleDeleteCategory(category)}
             />
           ))}
         </div>
       )}
 
       <CategoryDialog
-        open={showDialog}
-        onOpenChange={setShowDialog}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
         categoryToEdit={selectedCategory}
         onSuccess={refetchList}
+      />
+
+      <CategoryDialogDelete
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        category={selectedCategory}
       />
     </Page>
   );

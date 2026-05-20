@@ -24,7 +24,7 @@ export function TransactionItem({ color, icon: Icon, title, date, category, valu
                 <BadgeIcon icon={Icon} color={color} />
 
                 <div className="flex flex-col min-w-0 overflow-hidden flex-1">
-                    <span className="font-bold text-gray-800 text-sm truncate">{title}</span>
+                    <span className="font-medium text-gray-800 text-sm truncate">{title}</span>
                     <span className="text-xs text-gray-500">{date}</span>
                 </div>
 

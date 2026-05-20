@@ -12,7 +12,12 @@ interface CategoryStatCardProps {
 
 export function CategoryStatCard({ icon: Icon, iconName, value, description, color = 'text-primary', className }: CategoryStatCardProps) {
 
-    const IconComponent = Icon || (Icons as any)[iconName] || Icons.Tag;
+    const iconFromName = iconName
+        ? (Icons as unknown as Record<string, Icons.LucideIcon | undefined>)[
+              iconName
+          ]
+        : undefined;
+    const IconComponent = Icon || iconFromName || Icons.Tag;
 
     return (
         <Card className={`px-4 py-8 ${className || ''}`}>
