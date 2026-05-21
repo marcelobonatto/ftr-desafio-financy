@@ -11,6 +11,8 @@ import { LoadingState } from "@/components/LoadingState";
 import { EmptyState } from "@/components/EmptyState";
 
 export function TransactionsPage() {
+  const LIMIT = 10;
+
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
@@ -20,7 +22,7 @@ export function TransactionsPage() {
   const [period, setPeriod] = useState(new Date().toISOString().slice(0, 7));
   const [page, setPage] = useState(1);
 
-  const { data: listData, loading, error, refetch } = useQuery<TransactionsListData>(LIST_TRANSACTIONS, {
+  const { data: listData, loading, refetch } = useQuery<TransactionsListData>(LIST_TRANSACTIONS, {
     variables: {
       input: {
         page,
@@ -79,7 +81,7 @@ export function TransactionsPage() {
           />
         ) : (
           <TransactionsTable transactions={transactions} totalCount={totalCount}
-            currentPage={page} onPageChange={setPage} limit={10}
+            currentPage={page} onPageChange={setPage} limit={LIMIT}
             className="mt-4" />
         )
       }

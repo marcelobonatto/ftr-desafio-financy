@@ -7,6 +7,7 @@ import { formatCurrency } from "@/utils";
 import { CircleArrowDown, CircleArrowUp, SquarePen, Trash2 } from "lucide-react";
 import { TransactionTableFooter } from "./TransactionTableFooter";
 import type { CategoryColor, TransactionDataType } from "@/types";
+import { useState } from "react";
 
 interface TransactionsTableProps {
     className?: string;
@@ -17,20 +18,9 @@ interface TransactionsTableProps {
     limit?: number;
 }
 
-// const MOCK_TRANSACTIONS = [
-//     { id: 1, description: "Jantar no Restaurante", date: "18/05/26", category: "Alimentação", type: "expense", amount: 89.5, color: "blue", icon: "Utensils" },
-//     { id: 2, description: "Posto de Gasolina", date: "17/05/26", category: "Transporte", type: "expense", amount: 100, color: "purple", icon: "CarFront" },
-//     { id: 3, description: "Compras no Mercado", date: "16/05/26", category: "Mercado", type: "expense", amount: 156.8, color: "orange", icon: "ShoppingCart" },
-//     { id: 4, description: "Retorno de Investimento", date: "14/05/26", category: "Investimento", type: "income", amount: 340.25, color: "green", icon: "PiggyBank" },
-//     { id: 5, description: "Aluguel", date: "12/05/26", category: "Utilidades", type: "expense", amount: 1700, color: "yellow", icon: "ToolCase" },
-//     { id: 6, description: "Freelance", date: "12/05/26", category: "Salário", type: "income", amount: 2500, color: "green", icon: "BriefcaseBusiness" },
-//     { id: 7, description: "Compras Jantar", date: "10/05/26", category: "Mercado", type: "expense", amount: 150, color: "orange", icon: "ShoppingCart" },
-//     { id: 8, description: "Cinema", date: "08/05/26", category: "Entretenimento", type: "expense", amount: 88, color: "pink", icon: "Ticket" },
-//     { id: 9, description: "Aluguel de Filmes", date: "07/05/26", category: "Entretenimento", type: "expense", amount: 11.9, color: "pink", icon: "Ticket" },
-//     { id: 10, description: "Almoço", date: "06/05/26", category: "Alimentação", type: "expense", amount: 35.9, color: "blue", icon: "Utensils" }
-// ];
-
 export function TransactionsTable({ className, transactions, totalCount, currentPage, onPageChange, limit }: TransactionsTableProps) {
+    const [refetch, setRefetch] = useState();
+
     return (
         <Card className={`${className}`}>
             <CardContent>
@@ -94,9 +84,9 @@ export function TransactionsTable({ className, transactions, totalCount, current
                             );
                         })}
                     </TableBody>
-                    <TableFooter className="bg-white">
-                        <TableRow>
-                            <TableCell colSpan={6}>
+                    <TableFooter className="bg-white border-t border-gray-200">
+                        <TableRow className="hover:bg-transparent border-b-0 data-[state=selected]:bg-transparent">
+                            <TableCell colSpan={6} className="p-0 border-b-0">
                                 <TransactionTableFooter
                                     totalCount={totalCount}
                                     currentPage={currentPage}
