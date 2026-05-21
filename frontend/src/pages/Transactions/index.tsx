@@ -17,18 +17,18 @@ export function TransactionsPage() {
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState("all");
   const [type, setType] = useState("all");
-  const [period, setPeriod] = useState("2026-05");
+  const [period, setPeriod] = useState(new Date().toISOString().slice(0, 7));
   const [page, setPage] = useState(1);
 
   const { data: listData, loading, error, refetch } = useQuery<TransactionsListData>(LIST_TRANSACTIONS, {
     variables: {
       input: {
         page,
-        limit: 10,
         search: search.trim() || null,
         type: type === "all" ? null : type,
         categoryId: categoryId === "all" ? null : categoryId,
-        period
+        month: parseInt(period.split("-")[1]),
+        year: parseInt(period.split("-")[0])
       },
     },
     fetchPolicy: "network-only"
@@ -85,7 +85,7 @@ export function TransactionsPage() {
       }
 
       <TransactionDialog open={showCreateDialog} onOpenChange={setShowCreateDialog}
-        onSaveSuccess={refetch} />
+        onSuccess={refetch} />
     </Page>
   );
 }

@@ -10,33 +10,10 @@ import {
   LIST_CATEGORIES,
   GET_CATEGORY_STATISTICS,
 } from "@/lib/graphql/queries/Categories";
-import type { CategoryColor } from "@/types";
+import type { CategoryColor, CategoryItem, CategoryStatsData, CategoriesListData } from "@/types";
 import { CategoryDialogDelete } from "./components/CategoryDialogDelete";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
-
-interface CategoryStatsData {
-  getCategoryStatistics: {
-    totalCategories: number;
-    totalTransactions: number;
-    mostUsedCategoryName: string;
-    mostUsedCategoryIcon: string;
-    mostUsedCategoryColor: string;
-  };
-}
-
-interface CategoryItem {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  color: string;
-  transactionCount: number;
-}
-
-interface CategoriesListData {
-  listCategories: CategoryItem[];
-}
 
 export function CategoriesPage() {
   const [showEditDialog, setShowEditDialog] = useState(false);

@@ -45,10 +45,10 @@ scalar DateTimeISO
 
 input ListTransactionsInput {
   categoryId: String
-  description: String
   month: Int!
   page: Int! = 1
   perPage: Int! = 10
+  search: String
   type: TransactionType
   year: Int!
 }
@@ -68,9 +68,11 @@ type Mutation {
   createCategory(data: CreateCategoryInput!): CategoryModel!
   createTransaction(data: CreateTransactionInput!): TransactionModel!
   deleteCategory(id: String!): Boolean!
+  deleteTransaction(id: String!): TransactionModel!
   login(data: LoginInput!): LoginOutput!
   register(data: RegisterInput!): RegisterOutput!
   updateCategory(data: UpdateCategoryInput!, id: String!): CategoryModel!
+  updateTransaction(data: UpdateTransactionInput!, id: String!): TransactionModel!
   updateUser(data: UpdateUserInput!, id: String!): UserModel!
 }
 
@@ -127,6 +129,14 @@ input UpdateCategoryInput {
   description: String
   icon: String
   name: String
+}
+
+input UpdateTransactionInput {
+  amount: Float
+  categoryId: String
+  date: DateTimeISO
+  description: String
+  type: String
 }
 
 input UpdateUserInput {

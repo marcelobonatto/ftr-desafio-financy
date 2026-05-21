@@ -24,7 +24,7 @@ export class TransactionService {
     }
 
     async listTransactions(userId: string, input: ListTransactionsInput) {
-        const { page, perPage, month, year, description, type, categoryId } = input;
+        const { page, perPage, month, year, search, type, categoryId } = input;
 
         const skip = (page - 1) * perPage;
         const take = perPage;
@@ -40,9 +40,9 @@ export class TransactionService {
             }
         };
 
-        if (description) {
+        if (search) {
             where.description = {
-                contains: description
+                contains: search
             }
         }
 

@@ -30,20 +30,20 @@ export class TransactionResolver {
         return this.transactionService.listTransactions(user.id, input);
     }
 
-    // @Mutation(() => TransactionModel)
-    // async updateTransaction(
-    //     @Arg("data", () => UpdateTransactionInput) data: UpdateTransactionInput,
-    //     @Arg("id", () => String) id: String,
-    //     @GqlUser() user: UserModel
-    // ) {
-    //     return this.transactionService.updateTransaction(id, data, user.id);
-    // }
+    @Mutation(() => TransactionModel)
+    async updateTransaction(
+        @Arg("data", () => UpdateTransactionInput) data: UpdateTransactionInput,
+        @Arg("id", () => String) id: String,
+        @GqlUser() user: UserModel
+    ) {
+        return this.transactionService.updateTransaction(id, data, user.id);
+    }
 
-    // @Mutation(() => TransactionModel)
-    // async deleteTransaction(
-    //     @Arg("id", () => String) id: String,
-    //     @GqlUser() user: UserModel
-    // ) {
-    //     return this.transactionService.deleteTransaction(id, user.id);
-    // }
+    @Mutation(() => TransactionModel)
+    async deleteTransaction(
+        @Arg("id", () => String) id: String,
+        @GqlUser() user: UserModel
+    ) {
+        return this.transactionService.deleteTransaction(id, user.id);
+    }
 }

@@ -46,7 +46,7 @@ export interface PageInfo {
 
 export interface TransactionDataType {
   id: string;
-  title: string;
+  description: string;
   amount: number;
   type: "INCOME" | "EXPENSE";
   date: string;
@@ -64,4 +64,27 @@ export interface TransactionsListData {
     totalCount: number;
     pageInfo: PageInfo;
   };
+}
+
+export interface CategoryStatsData {
+  getCategoryStatistics: {
+    totalCategories: number;
+    totalTransactions: number;
+    mostUsedCategoryName: string;
+    mostUsedCategoryIcon: string;
+    mostUsedCategoryColor: string;
+  };
+}
+
+export interface CategoryItem {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  transactionCount: number;
+}
+
+export interface CategoriesListData {
+  listCategories: CategoryItem[];
 }

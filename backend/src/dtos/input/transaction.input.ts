@@ -6,7 +6,7 @@ import { TransactionType } from "../../../generated/prisma/enums";
 export class ListTransactionsInput {
     @Field(() => String, { nullable: true })
     @IsOptional()
-    description?: string;
+    search?: string;
 
     @Field(() => TransactionType, { nullable: true })
     @IsOptional()

@@ -1,18 +1,20 @@
-import type { TransactionDataType } from "@/types";
+import type { CategoriesListData, TransactionDataType } from "@/types";
 import { useState, type SubmitEventHandler } from "react";
 import { Button } from "./ui/button";
-import { CalendarIcon, CircleArrowDown, CircleArrowUp, Loader2 } from "lucide-react";
+import { ChevronDownIcon, CircleArrowDown, CircleArrowUp, Loader2 } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { DialogFooter } from "./ui/dialog";
-import { useMutation } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { CREATE_TRANSACTION, UPDATE_TRANSACTION } from "@/lib/graphql/mutations/Transactions";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
+import { ptBR } from "date-fns/locale";
+import { LIST_CATEGORIES } from "@/lib/graphql/queries/Categories";
 
 interface TransactionDialogFormProps {
     transactionToEdit?: TransactionDataType | null;
@@ -28,10 +30,18 @@ export function TransactionDialogForm({
     const isEditing = !!transactionToEdit;
 
     const [type, setType] = useState<"EXPENSE" | "INCOME">(() => transactionToEdit?.type ?? "EXPENSE");
-    const [description, setDescription] = useState(() => transactionToEdit?.title ?? "");
-    const [date, setDate] = useState(() => transactionToEdit?.date ?? new Date().toISOString().substring(0, 10));
+    const [description, setDescription] = useState(() => transactionToEdit?.description ?? "");
+    const [date, setDate] = useState<Date>(() => {
+        const baseDate = transactionToEdit?.date ? new Date(transactionToEdit.date) : new Date();
+        baseDate.setHours(0, 0, 0, 0);
+        return baseDate;
+    });
     const [amount, setAmount] = useState(() => transactionToEdit?.amount?.toString() ?? "0,00");
     const [category, setCategory] = useState(() => transactionToEdit?.category?.id ?? "");
+
+    const { data: categoriesData, loading: categoriesLoading } = useQuery<CategoriesListData>(LIST_CATEGORIES, {
+        skip: !open
+    });
 
     const [createTransaction, { loading: createLoading }] = useMutation(CREATE_TRANSACTION, {
         onCompleted: () => {
@@ -57,10 +67,63 @@ export function TransactionDialogForm({
 
     const isMutating = createLoading || updateLoading;
 
-    const handleSubmit: SubmitEventHandler = (e) => {
+    const handleSubmit: SubmitEventHandler = async (e) => {
         e.preventDefault();
-        onSuccess?.();
-        onOpenChange(false);
+
+        if (!description.trim()) return toast.error("A descrição é obrigatória.");
+        if (!date) return toast.error("A data é obrigatória.");
+
+        const parsedAmount = parseAmountToFloat(amount);
+        if (parsedAmount <= 0) return toast.error("Informe um valor válido maior que zero.");
+
+        if (!category) return toast.error("Selecione uma categoria.");
+
+        const payload = {
+            description: description.trim(),
+            amount: parsedAmount,
+            date,
+            type,
+            categoryId: category
+        };
+
+        if (isEditing && transactionToEdit) {
+            await updateTransaction({
+                variables: {
+                    id: transactionToEdit.id,
+                    data: payload
+                }
+            });
+        } else {
+            await createTransaction({
+                variables: {
+                    data: payload
+                }
+            });
+        }
+    }
+
+    const categories = categoriesData?.listCategories || [];
+
+    const formatCurrency = (value: string) => {
+        const digits = value.replace(/\D/g, "");
+
+        const amountAsNumber = Number(digits) / 100;
+
+        return amountAsNumber.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    };
+
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        const formatted = formatCurrency(inputValue);
+        setAmount(formatted);
+    };
+
+    const parseAmountToFloat = (value: string) => {
+        const cleanValue = value.replace(/\./g, "").replace(",", ".");
+        return parseFloat(cleanValue);
     }
 
     return (
@@ -114,37 +177,23 @@ export function TransactionDialogForm({
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="date">Data</Label>
-                    {/* <Input
-                        id="date"
-                        type="text"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        placeholder="Selecione"
-                        disabled={isMutating}
-                    /> */}
                     <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className={cn(
-                                    "w-[240px] justify-start text-left font-normal",
-                                    !date && "text-muted-foreground",
-                                )}
+                        <PopoverTrigger render={
+                            <Button variant={"outline"}
+                                data-empty={!date}
+                                className="w-full justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
                             >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? (
-                                    format(date, "PPP")
-                                ) : (
-                                    <span>Pick a date</span>
-                                )}
-                            </Button>
-                        </PopoverTrigger>
+                                {date ? format(date, "P", { locale: ptBR }) : <span>Selecione uma data</span>}
+                                <ChevronDownIcon data-icon="inline-end" />
+                            </Button>}
+                        />
                         <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                                 mode="single"
                                 selected={date}
                                 onSelect={setDate}
-                                initialFocus
+                                defaultMonth={date}
+                                locale={ptBR}
                             />
                         </PopoverContent>
                     </Popover>
@@ -157,7 +206,7 @@ export function TransactionDialogForm({
                             id="amount"
                             type="text"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={handleAmountChange}
                             placeholder="0,00"
                             disabled={isMutating}
                         />
@@ -179,9 +228,11 @@ export function TransactionDialogForm({
                     disabled={isMutating}
                 >
                     <NativeSelectOption value="" disabled>Selecione</NativeSelectOption>
-                    <NativeSelectOption value="food">Alimentação</NativeSelectOption>
-                    <NativeSelectOption value="transport">Transporte</NativeSelectOption>
-                    <NativeSelectOption value="salary">Salário</NativeSelectOption>
+                    {categories.map((category) => (
+                        <NativeSelectOption key={category.id} value={category.id}>
+                            {category.name}
+                        </NativeSelectOption>
+                    ))}
                 </NativeSelect>
             </div>
 

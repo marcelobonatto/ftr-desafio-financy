@@ -5,7 +5,7 @@ export const LIST_TRANSACTIONS = gql`
         listTransactions(input: $input) {
             items {
                 id
-                title
+                description
                 amount
                 type
                 date

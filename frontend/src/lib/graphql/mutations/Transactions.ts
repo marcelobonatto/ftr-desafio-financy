@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_TRANSACTION = gql`
-    mutation CreateTransaction($input: CreateTransactionInput!) {
-        createTransaction(input: $input) {
+    mutation CreateTransaction($data: CreateTransactionInput!) {
+        createTransaction(data: $data) {
             id
-            title
+            description  
         }
     }
 `;
@@ -13,7 +13,7 @@ export const UPDATE_TRANSACTION = gql`
     mutation UpdateTransaction($input: UpdateTransactionInput!) {
         updateTransaction(input: $input) {
             id
-            title
+            description
         }
     }
 `;
