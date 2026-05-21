@@ -10,8 +10,8 @@ export const CREATE_TRANSACTION = gql`
 `;
 
 export const UPDATE_TRANSACTION = gql`
-    mutation UpdateTransaction($input: UpdateTransactionInput!) {
-        updateTransaction(input: $input) {
+    mutation UpdateTransaction($id: String!, $data: UpdateTransactionInput!) {
+        updateTransaction(id: $id, data: $data) {
             id
             description
         }
@@ -19,9 +19,7 @@ export const UPDATE_TRANSACTION = gql`
 `;
 
 export const DELETE_TRANSACTION = gql`
-    mutation DeleteTransaction($input: DeleteTransactionInput!) {
-        deleteTransaction(input: $input) {
-            id
-        }
+    mutation DeleteTransaction($id: String!) {
+        deleteTransaction(id: $id)
     }
 `;

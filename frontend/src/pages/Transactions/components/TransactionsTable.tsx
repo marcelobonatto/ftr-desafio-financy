@@ -7,20 +7,19 @@ import { formatCurrency } from "@/utils";
 import { CircleArrowDown, CircleArrowUp, SquarePen, Trash2 } from "lucide-react";
 import { TransactionTableFooter } from "./TransactionTableFooter";
 import type { CategoryColor, TransactionDataType } from "@/types";
-import { useState } from "react";
 
 interface TransactionsTableProps {
     className?: string;
     transactions: TransactionDataType[];
     totalCount: number;
     currentPage: number;
-    onPageChange: (page: number) => void;
     limit?: number;
+    onPageChange: (page: number) => void;
+    onEdit: (transaction: TransactionDataType) => void;
+    onDelete: (transaction: TransactionDataType) => void;
 }
 
-export function TransactionsTable({ className, transactions, totalCount, currentPage, onPageChange, limit }: TransactionsTableProps) {
-    const [refetch, setRefetch] = useState();
-
+export function TransactionsTable({ className, transactions, totalCount, currentPage, onPageChange, limit, onEdit, onDelete }: TransactionsTableProps) {
     return (
         <Card className={`${className}`}>
             <CardContent>
@@ -73,10 +72,10 @@ export function TransactionsTable({ className, transactions, totalCount, current
                                         {isIncome ? "+" : "-"} {formatCurrency(Math.abs(transaction.amount))}
                                     </TableCell>
                                     <TableCell className="text-right text-gray-600">
-                                        <Button variant="outline" size="icon" onClick={() => { }}>
+                                        <Button variant="outline" size="icon" onClick={() => onDelete(transaction)}>
                                             <Trash2 size={16} color="red" />
                                         </Button>
-                                        <Button variant="outline" size="icon" onClick={() => { }}>
+                                        <Button variant="outline" size="icon" onClick={() => onEdit(transaction)}>
                                             <SquarePen size={16} />
                                         </Button>
                                     </TableCell>

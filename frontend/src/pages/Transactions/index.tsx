@@ -4,16 +4,20 @@ import { useState } from "react";
 import { TransactionFilters } from "./components/TransactionFilters";
 import { TransactionsTable } from "./components/TransactionsTable";
 import { TransactionDialog } from "@/components/TransactionDialog";
-import { useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { LIST_TRANSACTIONS } from "@/lib/graphql/queries/Transactions";
 import type { TransactionsListData } from "@/types";
 import { LoadingState } from "@/components/LoadingState";
 import { EmptyState } from "@/components/EmptyState";
+import { ConfirmationDialog } from "@/components/ConfirmationDialog";
+import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transactions";
 
 export function TransactionsPage() {
   const LIMIT = 10;
 
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const [search, setSearch] = useState("");
@@ -36,18 +40,33 @@ export function TransactionsPage() {
     fetchPolicy: "network-only"
   });
 
+  const [deleteTransaction, { loading: isDeleting }] = useMutation(DELETE_TRANSACTION, {
+    refetchQueries: ["ListTransactions"],
+    onCompleted: () => setShowDeleteDialog(false)
+  });
+
   const transactionsResponse = listData?.listTransactions;
   const transactions = transactionsResponse?.items || [];
   const totalCount = transactionsResponse?.totalCount || 0;
 
   const handleCreateTransaction = () => {
-    setShowCreateDialog(true);
     setSelectedTransaction(null);
+    setShowEditDialog(true);
   }
 
   const handleEditTransaction = (transaction) => {
-    setShowCreateDialog(true);
     setSelectedTransaction(transaction);
+    setShowEditDialog(true);
+  }
+
+  const handleDeleteTransaction = (transaction) => {
+    setSelectedTransaction(transaction);
+    setShowDeleteDialog(true);
+  }
+
+  const handleDeleteConfirm = async() => {
+    if (!selectedTransaction) return;
+    await deleteTransaction({ variables: { id: selectedTransaction.id } });
   }
 
   if (loading) {
@@ -82,12 +101,30 @@ export function TransactionsPage() {
         ) : (
           <TransactionsTable transactions={transactions} totalCount={totalCount}
             currentPage={page} onPageChange={setPage} limit={LIMIT}
+            onEdit={handleEditTransaction} onDelete={handleDeleteTransaction}
             className="mt-4" />
         )
       }
 
-      <TransactionDialog open={showCreateDialog} onOpenChange={setShowCreateDialog}
-        onSuccess={refetch} />
+      <TransactionDialog 
+        open={showEditDialog} 
+        onOpenChange={setShowEditDialog}
+        transactionToEdit={selectedTransaction}
+        onSuccess={refetch}
+      />
+
+      <ConfirmationDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Remover Transação"
+        isLoading={isDeleting}
+        onConfirm={handleDeleteConfirm}
+        description={
+          <>
+            Tem certeza que deseja remover a transação <span className="font-medium"> {selectedTransaction?.description}</span>? Esta ação não pode ser desfeita.
+          </>
+        }
+      />
     </Page>
   );
 }

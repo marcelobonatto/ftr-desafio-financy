@@ -39,11 +39,12 @@ export class TransactionResolver {
         return this.transactionService.updateTransaction(id, data, user.id);
     }
 
-    @Mutation(() => TransactionModel)
+    @Mutation(() => Boolean)
     async deleteTransaction(
         @Arg("id", () => String) id: String,
         @GqlUser() user: UserModel
     ) {
-        return this.transactionService.deleteTransaction(id, user.id);
+        await this.transactionService.deleteTransaction(id, user.id);
+        return true;
     }
 }
