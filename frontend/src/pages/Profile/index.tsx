@@ -1,15 +1,25 @@
 import { Page } from "@/components/Page";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { FieldDescription } from "@/components/ui/field";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { UserAvatar } from "@/components/UserAvatar";
 import { UPDATE_USER } from "@/lib/graphql/mutations/Users";
 import { useAuthStore } from "@/stores/auth";
 import { useMutation } from "@apollo/client/react";
 import { Loader2, LogOut, Mail, Save, User } from "lucide-react";
-import { useEffect, useState, type SubmitEventHandler } from "react";
+import { useState, type SubmitEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -18,27 +28,20 @@ type UpdateUserMutationData = {
     id: string;
     name: string;
     email: string;
-  }
-}
+  };
+};
 
 type UpdateUserVariables = {
   id: string;
   data: {
     name: string;
-  }
-}
+  };
+};
 
 export function ProfilePage() {
-
   const { user, replaceName, logout } = useAuthStore();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-
-  useEffect(() => {
-    if (user?.name) {
-      setName(user.name);
-    }
-  }, [user]);
+  const [name, setName] = useState(() => user?.name ?? "");
 
   const [updateUser, { loading }] = useMutation<
     UpdateUserMutationData,
@@ -49,12 +52,12 @@ export function ProfilePage() {
 
       if (updatedUser && user) {
         replaceName(updatedUser.name);
-        toast.success('Perfil atualizado com sucesso!');
+        toast.success("Perfil atualizado com sucesso!");
       }
     },
     onError: (error) => {
-      toast.error(error.message || 'Não foi possível salvar as alterações.');
-    }
+      toast.error(error.message || "Não foi possível salvar as alterações.");
+    },
   });
 
   const handleSubmit: SubmitEventHandler = async (e) => {
@@ -69,15 +72,15 @@ export function ProfilePage() {
     await updateUser({
       variables: {
         id: user.id,
-        data: { name }
-      }
+        data: { name },
+      },
     });
   };
 
   const handleLogout = () => {
     logout();
-    navigate('/');
-    toast.success('Sessão encerrada com sucesso!');
+    navigate("/");
+    toast.success("Sessão encerrada com sucesso!");
   };
 
   return (
@@ -101,9 +104,15 @@ export function ProfilePage() {
                 <Label htmlFor="name">Nome completo</Label>
 
                 <InputGroup>
-                  <InputGroupInput id="name" type="text"
-                    placeholder="Seu nome completo" value={name} onChange={(e) => setName(e.target.value)}
-                    disabled={loading} required />
+                  <InputGroupInput
+                    id="name"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    disabled={loading}
+                    required
+                  />
 
                   <InputGroupAddon>
                     <User />
@@ -115,20 +124,34 @@ export function ProfilePage() {
                 <Label htmlFor="email">E-mail</Label>
 
                 <InputGroup>
-                  <InputGroupInput id="email" type="email" placeholder="mail@exemplo.com"
-                    value={user?.email || ''} readOnly />
+                  <InputGroupInput
+                    id="email"
+                    type="email"
+                    placeholder="mail@exemplo.com"
+                    value={user?.email || ""}
+                    readOnly
+                  />
 
                   <InputGroupAddon>
                     <Mail />
                   </InputGroupAddon>
                 </InputGroup>
-                <FieldDescription>O e-mail não pode ser alterado</FieldDescription>
+                <FieldDescription>
+                  O e-mail não pode ser alterado
+                </FieldDescription>
               </div>
 
-              <Button type="submit" variant="solid" size="md" className="w-full" disabled={loading}>
+              <Button
+                type="submit"
+                variant="solid"
+                size="md"
+                className="w-full"
+                disabled={loading}
+              >
                 {loading ? (
                   <>
-                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Salvando alterações...
+                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Salvando
+                    alterações...
                   </>
                 ) : (
                   <>
@@ -138,7 +161,14 @@ export function ProfilePage() {
               </Button>
             </form>
 
-            <Button type="button" variant="outline" size="md" className="w-full" onClick={handleLogout} disabled={loading}>
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              className="w-full"
+              onClick={handleLogout}
+              disabled={loading}
+            >
               <LogOut className="mr-2 h-4 w-4 text-danger" /> Sair da conta
             </Button>
           </CardContent>

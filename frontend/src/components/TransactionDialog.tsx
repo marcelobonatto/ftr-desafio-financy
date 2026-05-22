@@ -1,10 +1,11 @@
+import type { TransactionDataType } from "@/types";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { TransactionDialogForm } from "./TransactionDialogForm";
 
 interface TransactionDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    transactionToEdit?: any | null;
+    transactionToEdit?: TransactionDataType | null;
     onSuccess?: () => void;
 }
 

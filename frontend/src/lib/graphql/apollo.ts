@@ -3,20 +3,22 @@ import { HttpLink } from "@apollo/client/link/http";
 import { SetContextLink } from "@apollo/client/link/context";
 import { useAuthStore } from "@/stores/auth";
 
-const httpLink = new HttpLink({ uri: import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000/graphql' });
+const httpLink = new HttpLink({
+  uri: import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/graphql",
+});
 
 const authLink = new SetContextLink((prevContext) => {
-    const token = useAuthStore.getState().token;
+  const token = useAuthStore.getState().token;
 
-    return {
-        headers: {
-            ...prevContext.headers,
-            authorization: token ? `Bearer ${token}` : '',
-        }
-    }
+  return {
+    headers: {
+      ...prevContext.headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
 });
 
 export const apolloClient = new ApolloClient({
-    link: ApolloLink.from([authLink, httpLink]),
-    cache: new InMemoryCache(),
+  link: ApolloLink.from([authLink, httpLink]),
+  cache: new InMemoryCache(),
 });
