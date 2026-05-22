@@ -1,31 +1,37 @@
 import { formatCurrency } from "@/utils";
 import { BadgeIcon } from "@/components/BadgeIcon";
-import { CircleArrowDown, CircleArrowUp, type LucideIcon } from "lucide-react";
+import { CircleArrowDown, CircleArrowUp } from "lucide-react";
 import { BadgeText } from "@/components/BadgeText";
 import type { CategoryColor } from "@/types";
 
 interface TransactionItemProps {
     color: CategoryColor;
-    icon: LucideIcon;
+    icon: string;
     title: string;
-    date: string;
+    type: "INCOME" | "EXPENSE";
+    date: Date;
     category: string;
     value: number;
 }
 
-export function TransactionItem({ color, icon: Icon, title, date, category, value }: TransactionItemProps) {
+export function TransactionItem({ color, icon, title, type, date, category, value }: TransactionItemProps) {
 
-    const isNegative = value < 0;
+    const isNegative = (type === "EXPENSE");
     const formattedValue = (isNegative ? '- ' : '+ ') + formatCurrency(Math.abs(value));
+    const formattedDate = date.toLocaleDateString("pt-BR", {
+                                                    day: "2-digit",
+                                                    month: "2-digit",
+                                                    year: "2-digit",
+                                                });
 
     return (
         <div className="flex items-center justify-between py-4 border-b border-gray-500 hover:bg-gray-50/50 transition-colors px-4 -mx-4">
             <div className="flex items-center gap-4 flex-1">
-                <BadgeIcon icon={Icon} color={color} />
+                <BadgeIcon iconName={icon} color={color} />
 
                 <div className="flex flex-col min-w-0 overflow-hidden flex-1">
                     <span className="font-medium text-gray-800 text-sm truncate">{title}</span>
-                    <span className="text-xs text-gray-500">{date}</span>
+                    <span className="text-xs text-gray-500">{formattedDate}</span>
                 </div>
 
                 <div className="flex items-center w-1/2">

@@ -126,6 +126,18 @@ export class TransactionService {
         };
     }
 
+    async getLastestTransactions(userId: string, limit: number) {
+        return await prismaClient.transaction.findMany({
+            take: limit,
+            orderBy: {
+                date: "desc"
+            },
+            include: {
+                category: true
+            }
+        })
+    }
+
     async updateTransaction(id: String, data: UpdateTransactionInput, userId: String) {
         const transaction = await prismaClient.transaction.findFirst({
             where: {

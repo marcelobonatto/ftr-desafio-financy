@@ -39,6 +39,15 @@ export class TransactionResolver {
         return this.transactionService.listTransactions(user.id, input);
     }
 
+    @Query(() => [TransactionModel])
+    async getLatestTransactionsOutput(
+        @Arg("limit", () => Number) limit: number,
+        @GqlUser() user: UserModel
+    ): Promise<TransactionModel[]> {
+
+        return this.transactionService.getLastestTransactions(user.id, limit);
+    }
+
     @Mutation(() => TransactionModel)
     async updateTransaction(
         @Arg("data", () => UpdateTransactionInput) data: UpdateTransactionInput,

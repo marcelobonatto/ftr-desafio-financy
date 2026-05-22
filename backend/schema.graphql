@@ -102,6 +102,7 @@ type PaginatedTransactionsOutput {
 
 type Query {
   getCategoryStatistics: CategoryDashboardOutput!
+  getLatestTransactionsOutput(limit: Float!): [TransactionModel!]!
   getTransactionsSummary(input: GetTransactionsSummaryInput!): GetTransactionsSummaryOutput!
   getUser(id: String!): UserModel!
   listCategories: [CategoryModel!]!

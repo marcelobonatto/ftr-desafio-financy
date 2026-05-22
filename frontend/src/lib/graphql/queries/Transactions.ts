@@ -36,3 +36,21 @@ export const GET_TRANSACTIONS_SUMMARY = gql`
         }
     }
 `;
+
+export const GET_LATEST_TRANSACTIONS = gql`
+    query GetLatestTransactionsOutput($limit: Float!) {
+        getLatestTransactionsOutput(limit: $limit) {
+            id
+            description
+            type  
+            date
+            amount
+            category {
+                id
+                name
+                icon
+                color
+            }
+        }
+    }
+`;
