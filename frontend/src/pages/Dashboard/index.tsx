@@ -8,6 +8,16 @@ import { CategoryItem } from "./components/CategoryItem";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { TransactionDialog } from "@/components/TransactionDialog";
+import { GET_TRANSACTIONS_SUMMARY } from "@/lib/graphql/queries/Transactions";
+import { useQuery } from "@apollo/client/react";
+
+interface GetTransactionSummaryData {
+  getTransactionsSummary: {
+    totalBalance: number,
+    monthIncomes: number,
+    monthExpenses: number
+  };
+}
 
 export function DashboardPage() {
 
@@ -17,12 +27,33 @@ export function DashboardPage() {
     setOpenCreateTransactionDialog(true);
   }
 
+  const [period, setPeriod] = useState(() => new Date().toISOString().slice(0, 7));
+
+  const month = parseInt(period.split("-")[1]);
+  const year = parseInt(period.split("-")[0]);
+
+  const { data, loading } = useQuery<GetTransactionSummaryData>(GET_TRANSACTIONS_SUMMARY, {
+    variables: {
+      input: { month, year }
+    },
+    fetchPolicy: "network-only"
+  });
+
+  const summary = data?.getTransactionsSummary || {
+    totalBalance: 0,
+    monthIncomes: 0,
+    monthExpenses: 0
+  };
+
   return (
     <Page>
       <div className="flex gap-6">
-        <CardWithTotal title="Saldo Total" icon={Wallet} color="text-purple-base" total={12847.32} className="flex-1" />
-        <CardWithTotal title="Receitas do Mês" icon={CircleArrowUp} color="text-brand-base" total={4250} className="flex-1" />
-        <CardWithTotal title="Despesas do Mês" icon={CircleArrowDown} color="text-red-base" total={2180.45} className="flex-1" />
+        <CardWithTotal title="Saldo Total" icon={Wallet} color="text-purple-base" 
+                       total={summary.totalBalance} loading={loading} className="flex-1" />
+        <CardWithTotal title="Receitas do Mês" icon={CircleArrowUp} color="text-brand-base" 
+                       total={summary.monthIncomes} loading={loading} className="flex-1" />
+        <CardWithTotal title="Despesas do Mês" icon={CircleArrowDown} color="text-red-base" 
+                       total={summary.monthExpenses} loading={loading} className="flex-1" />
       </div>
       <div className="flex gap-6 mt-6">
         <Card className="px-2 py-8 flex-2">

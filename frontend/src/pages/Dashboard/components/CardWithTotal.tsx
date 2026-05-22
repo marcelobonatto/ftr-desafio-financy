@@ -1,6 +1,6 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/utils";
-import type { LucideIcon } from "lucide-react";
+import { Loader2, type LucideIcon } from "lucide-react";
 
 interface CardWithTotalProps {
   title: string;
@@ -8,9 +8,10 @@ interface CardWithTotalProps {
   color: string;
   total: number;
   className?: string;
+  loading?: boolean;
 }
 
-export function CardWithTotal({ title, icon: Icon, color, total, className }: CardWithTotalProps) {
+export function CardWithTotal({ title, icon: Icon, color, total, className, loading = false }: CardWithTotalProps) {
   return (
     <Card className={`px-4 py-8 ${className || ''}`}>
       <CardHeader>
@@ -19,7 +20,7 @@ export function CardWithTotal({ title, icon: Icon, color, total, className }: Ca
             <span className="text-sm uppercase text-gray-500">{ title }</span>
         </CardTitle>
         <CardDescription className="font-bold text-3xl text-black mt-2">
-            { formatCurrency(total) }
+            {loading ? <Loader2 size={16} /> : formatCurrency(total) }
         </CardDescription>
       </CardHeader>
     </Card>

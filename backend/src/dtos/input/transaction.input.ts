@@ -3,6 +3,15 @@ import { Field, InputType, Int } from "type-graphql";
 import { TransactionType } from "../../../generated/prisma/enums";
 
 @InputType()
+export class GetTransactionsSummaryInput {
+    @Field(() => Int)
+    month!: number;
+
+    @Field(() => Int)
+    year!: number;
+}
+
+@InputType()
 export class ListTransactionsInput {
     @Field(() => String, { nullable: true })
     @IsOptional()

@@ -1,5 +1,5 @@
 import { prismaClient } from "../lib/prisma";
-import type { CreateTransactionInput, ListTransactionsInput } from "../dtos/input/transaction.input";
+import type { CreateTransactionInput, GetTransactionsSummaryInput, ListTransactionsInput } from "../dtos/input/transaction.input";
 import type { UpdateTransactionInput } from "../dtos/input/transaction.input";
 import { TransactionType } from "../../generated/prisma/enums";
 
@@ -21,6 +21,47 @@ export class TransactionService {
                 category: true
             }
         });
+    }
+
+    async getTransactionsSummary(userId: string, input: GetTransactionsSummaryInput) {
+
+        const { month, year } = input;
+
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+        const [balanceAggregate, monthAggregate] = await Promise.all([
+            prismaClient.transaction.aggregate({
+                where: { userId },
+                _sum: { amount: true }
+            }),
+
+            prismaClient.transaction.groupBy({
+                by: ['type'],
+                where: {
+                    userId,
+                    date: {
+                        gte: startDate,
+                        lte: endDate
+                    }
+                },
+                _sum: { amount: true }
+            })
+        ]);
+
+        const totalBalance = balanceAggregate._sum.amount || 0;
+
+        const incomeRow = monthAggregate.find(row => row.type === TransactionType.INCOME);
+        const expenseRow = monthAggregate.find(row => row.type === TransactionType.EXPENSE);
+
+        const monthIncomes = incomeRow?._sum.amount || 0;
+        const monthExpenses = expenseRow?._sum.amount ? Math.abs(expenseRow._sum.amount) : 0;
+
+        return {
+            totalBalance,
+            monthIncomes,
+            monthExpenses
+        };
     }
 
     async listTransactions(userId: string, input: ListTransactionsInput) {

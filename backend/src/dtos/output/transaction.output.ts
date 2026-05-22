@@ -27,3 +27,15 @@ export class PaginatedTransactionsOutput {
     @Field(() => PageInfo)
     pageInfo!: PageInfo;
 }
+
+@ObjectType()
+export class GetTransactionsSummaryOutput {
+    @Field(() => Number)
+    totalBalance!: number;
+
+    @Field(() => Number)
+    monthIncomes!: number;
+
+    @Field(() => Number)
+    monthExpenses!: number;
+}

@@ -26,3 +26,13 @@ export const LIST_TRANSACTIONS = gql`
         }
     }
 `;
+
+export const GET_TRANSACTIONS_SUMMARY = gql`
+    query GetTransactionsSummary($input: GetTransactionsSummaryInput!) {
+        getTransactionsSummary(input: $input) {
+            totalBalance
+            monthIncomes
+            monthExpenses
+        }
+    }
+`;
