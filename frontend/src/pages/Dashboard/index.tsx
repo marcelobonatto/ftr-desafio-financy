@@ -91,8 +91,6 @@ export function DashboardPage() {
             ) : (
               <>
                 {latestTransactions.map((transaction) => {
-                  const isIncome = transaction.type === "INCOME";
-
                   return (
                     <TransactionItem
                       key={transaction.id}
@@ -102,7 +100,7 @@ export function DashboardPage() {
                       type={transaction.type}
                       date={new Date(transaction.date)}
                       category={transaction.category.name}
-                      value={isIncome ? transaction.amount : -transaction.amount}
+                      value={transaction.amount}
                     />
                   );
                 })}

@@ -17,3 +17,24 @@ export class CategoryDashboardOutput {
     @Field(() => String)
     mostUsedCategoryColor!: string;
 }
+
+@ObjectType()
+export class GetTopCategoriesOutput {
+    @Field(() => String)
+    id!: string;
+
+    @Field(() => String)
+    name!: string;
+
+    @Field(() => String)
+    icon!: string;
+
+    @Field(() => String)
+    color!: string;
+
+    @Field(() => Number)
+    transactionCount!: number;
+
+    @Field(() => Number)
+    totalAmount!: number;
+}

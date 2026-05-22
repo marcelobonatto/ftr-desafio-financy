@@ -1,5 +1,5 @@
 import { IsAuth } from "../middlewares/auth.middleware";
-import { CategoryDashboardOutput } from "../dtos/output/category.output";
+import { CategoryDashboardOutput, GetTopCategoriesOutput } from "../dtos/output/category.output";
 import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { CategoryService } from "../services/category.service";
 import { CategoryModel } from "../models/category.model";
@@ -29,6 +29,15 @@ export class CategoryResolver {
     @Query(() => [CategoryModel])
     async listCategories(@GqlUser() user: UserModel): Promise<CategoryModel[]> {
         return this.categoryService.listCategoriesByUser(user.id);
+    }
+
+    @Query(() => [GetTopCategoriesOutput])
+    async getTopCategories(
+        @Arg("limit", () => Number) limit: number,
+        @GqlUser() user: UserModel
+    ): Promise<GetTopCategoriesOutput[]> {
+
+        return this.categoryService.getTopCategories(user.id, limit);
     }
 
     @Mutation(() => CategoryModel)

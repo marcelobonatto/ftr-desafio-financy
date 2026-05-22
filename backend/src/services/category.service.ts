@@ -78,6 +78,52 @@ export class CategoryService {
         }));
     }
 
+    async getTopCategories(userId: string, limit: number) {
+        const groupResult = await prismaClient.transaction.groupBy({
+            by: ['categoryId'],
+            where: {
+                userId
+            },
+            _count: {
+                id: true
+            },
+            _sum: {
+                amount: true
+            },
+            orderBy: {
+                _count: {
+                    id: 'desc'
+                }
+            },
+            take: limit
+        });
+
+        if (groupResult.length === 0) return [];
+
+        const categoryIds = groupResult.map(item => item.categoryId);
+
+        const categories = await prismaClient.category.findMany({
+            where: {
+                id: { in: categoryIds}
+            }
+        });
+
+        const topCategories = groupResult.map(groupItem => {
+            const categoryInfo = categories.find(c => c.id === groupItem.categoryId);
+
+            return {
+                id: groupItem.categoryId,
+                name: categoryInfo?.name || "Desconhecido",
+                color: categoryInfo?.color || "blue",
+                icon: categoryInfo?.icon || "help-circle",
+                transactionCount: groupItem._count.id,
+                totalAmount: groupItem._sum.amount ?? 0
+            }
+        });
+
+        return topCategories.sort((a, b) => b.transactionCount - a.transactionCount);
+    }
+
     async updateCategory(id: String, data: UpdateCategoryInput, userId: String) {
         const category = await prismaClient.category.findFirst({
             where: {
