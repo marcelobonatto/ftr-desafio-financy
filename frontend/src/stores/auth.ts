@@ -2,6 +2,7 @@ import { apolloClient } from "@/lib/graphql/apollo";
 import { LOGIN } from "@/lib/graphql/mutations/Login";
 import { REGISTER } from "@/lib/graphql/mutations/Register";
 import type { LoginInput, RegisterInput, UserDataType } from "@/types";
+import { isTokenExpired } from "@/utils";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -23,12 +24,15 @@ type LoginMutationData = {
 
 interface AuthState {
     token: string | null;
+    refreshToken: string | null;
     user: UserDataType | null;
-    isAuthenticated: boolean;
+
     signup: (data: RegisterInput) => Promise<boolean>;
     login: (data: LoginInput) => Promise<boolean>;
     logout: () => void;
     replaceName: (newName: string) => void;
+
+    isAuthenticated: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -36,7 +40,17 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             user: null,
             token: null,
-            isAuthenticated: false,
+            refreshToken: null,
+            isAuthenticated: () => {
+                const storage = localStorage.getItem("auth-storage");
+                if (!storage) return false;
+
+                const parsed = JSON.parse(storage);
+                const token = parsed?.state?.token;
+                if (!token) return false;
+
+                return !isTokenExpired(token);
+            },
             login: async (loginData: LoginInput) => {
                 try {
                     const { data } = await apolloClient.mutate<LoginMutationData, { data: LoginInput }>({
@@ -50,16 +64,12 @@ export const useAuthStore = create<AuthState>()(
                     });
 
                     if (data?.login && data.login.token) {
-                        const { user, token } = data.login;
+                        const { user, token, refreshToken } = data.login;
 
                         set({
-                            user: {
-                                id: user.id,
-                                name: user.name,
-                                email: user.email
-                            },
+                            user,
                             token,
-                            isAuthenticated: true
+                            refreshToken
                         })
 
                         return true;
@@ -85,16 +95,12 @@ export const useAuthStore = create<AuthState>()(
                     });
 
                     if (data?.register) {
-                        const { token, user } = data.register;
+                        const { token, user, refreshToken } = data.register;
 
                         set({
-                            user: {
-                                id: user.id,
-                                name: user.name,
-                                email: user.email
-                            },
+                            user,
                             token,
-                            isAuthenticated: true
+                            refreshToken
                         });
 
                         return true;
@@ -110,7 +116,7 @@ export const useAuthStore = create<AuthState>()(
                 set({
                     user: null,
                     token: null,
-                    isAuthenticated: false
+                    refreshToken: null
                 });
 
                 apolloClient.clearStore();
@@ -132,4 +138,5 @@ export const useAuthStore = create<AuthState>()(
         {
             name: 'auth-storage'
         }
-    ));
+    )
+);

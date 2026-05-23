@@ -7,15 +7,28 @@ import { LoginPage } from "./pages/Auth/Login";
 import { SignupPage } from "./pages/Auth/Signup";
 import { Layout } from "./components/Layout";
 import { useAuthStore } from "@/stores/auth";
+import { isTokenExpired } from "./utils";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
+  const token = useAuthStore((s) => s.token);
+  const logout = useAuthStore((s) => s.logout);
+
+  if (!token || isTokenExpired(token)) {
+    logout();
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
-  return !isAuthenticated ? <>{children}</> : <Navigate to="/" replace />
+  const token = useAuthStore((s) => s.token);
+
+  if (token && !isTokenExpired(token)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 }
 
 function App() {

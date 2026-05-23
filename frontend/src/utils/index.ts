@@ -30,3 +30,16 @@ export function getNameInitials(name: string | undefined): string {
 
   return `${firstLetter}${lastLetter}`;
 }
+
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(
+      atob(token.split(".")[1])
+    );
+
+    return payload.exp * 1000 < Date.now();
+
+  } catch {
+    return true;
+  }
+}

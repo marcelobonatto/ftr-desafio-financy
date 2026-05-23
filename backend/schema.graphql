@@ -43,6 +43,15 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTimeISO
 
+type GetTopCategoriesOutput {
+  color: String!
+  icon: String!
+  id: String!
+  name: String!
+  totalAmount: Float!
+  transactionCount: Float!
+}
+
 input GetTransactionsSummaryInput {
   month: Int!
   year: Int!
@@ -103,6 +112,7 @@ type PaginatedTransactionsOutput {
 type Query {
   getCategoryStatistics: CategoryDashboardOutput!
   getLatestTransactionsOutput(limit: Float!): [TransactionModel!]!
+  getTopCategories(limit: Float!): [GetTopCategoriesOutput!]!
   getTransactionsSummary(input: GetTransactionsSummaryInput!): GetTransactionsSummaryOutput!
   getUser(id: String!): UserModel!
   listCategories: [CategoryModel!]!

@@ -24,3 +24,15 @@ export const LIST_CATEGORIES = gql`
     }
   }
 `;
+
+export const GET_TOP_CATEGORIES = gql`
+  query GetTopCategories($limit: Float!) {
+    getTopCategories(limit: $limit) {
+      id
+      name
+      color
+      transactionCount
+      totalAmount
+    }
+  }
+`;

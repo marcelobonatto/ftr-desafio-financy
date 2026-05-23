@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-import {
-  CalendarDays,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PeriodPickerProps {
   value: string;
@@ -47,16 +42,19 @@ export function PeriodPicker({ value, onChange }: PeriodPickerProps) {
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger className="group/native-select relative has-[select:disabled]:opacity-50 w-full">
-        <Button
-          variant="outline"
-          className="w-full h-9 justify-between border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-md px-3 font-normal"
-        >
-          <span>
-            {MONTHS[currentMonth - 1]} / {currentYear}
-          </span>
-          <ChevronDown size={16} className="text-black opacity-50 shrink-0" />
-        </Button>
+      <PopoverTrigger
+        className="group/native-select relative has-[select:disabled]:opacity-50 w-full"
+        render={
+          <Button
+            variant="outline"
+            className="w-full h-9 justify-between border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-md px-3 font-normal"
+          />
+        }
+      >
+        <span>
+          {MONTHS[currentMonth - 1]} / {currentYear}
+        </span>
+        <ChevronDown size={16} className="text-black opacity-50 shrink-0" />
       </PopoverTrigger>
 
       <PopoverContent
@@ -96,11 +94,10 @@ export function PeriodPicker({ value, onChange }: PeriodPickerProps) {
                 type="button"
                 onClick={() => handleMonthSelect(index)}
                 className={`h-9 rounded-md text-xs font-medium transaction-all
-                            ${
-                              isSelected
-                                ? "bg-brand-base text-white font-semibold shadow-sm"
-                                : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 active:bg-gray-100"
-                            }`}
+                            ${isSelected
+                    ? "bg-brand-base text-white font-semibold shadow-sm"
+                    : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 active:bg-gray-100"
+                  }`}
               >
                 {month.substring(0, 3)}
               </Button>

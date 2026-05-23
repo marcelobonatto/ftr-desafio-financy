@@ -1,17 +1,16 @@
 import { NavLink } from "react-router-dom";
-import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useAuthStore } from "@/stores/auth";
-import { useLocation, useNavigate } from "react-router-dom";
 import { UserAvatar } from "./UserAvatar";
+import { isTokenExpired } from "@/utils";
 
 export function Header() {
-    const { user, isAuthenticated } = useAuthStore();
-    const location = useLocation();
-    const navigate = useNavigate();
+    const token = useAuthStore((state) => state.token);
+
+    const authenticated = token && !isTokenExpired(token);
 
     return (
         <header className="w-full px-16 bg-white border-b border-gray-200">
-            {isAuthenticated && (
+            {authenticated && (
                 <div className="mx-auto flex h-20 items-center justify-between px-16">
                     <div className="flex w-1/4 justify-start">
                         <img src="/img/logo.svg" alt="Logo" className="h-8" />
