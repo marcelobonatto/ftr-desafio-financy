@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
 
+// Classe de saída para dashboard de categoria.
 @ObjectType()
 export class CategoryDashboardOutput {
     @Field(() => Number)
@@ -18,6 +19,7 @@ export class CategoryDashboardOutput {
     mostUsedCategoryColor!: string;
 }
 
+// Classe de saída para categorias mais usadas.
 @ObjectType()
 export class GetTopCategoriesOutput {
     @Field(() => String)

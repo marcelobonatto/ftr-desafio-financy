@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
+// Modelo de dados da tabela User
 @ObjectType()
 export class UserModel {
     @Field(() => ID)

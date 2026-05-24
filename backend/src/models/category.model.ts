@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import { UserModel } from "./user.model";
 
+// Modelo da tabela Category.
 @ObjectType()
 export class CategoryModel {
 

@@ -6,6 +6,7 @@ import { isTokenExpired } from "@/utils";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// Tipos de dados para executar o cadastro
 type RegisterMutationData = {
     register: {
         token: string
@@ -14,6 +15,7 @@ type RegisterMutationData = {
     }
 };
 
+// Tipos de dados para executar o login
 type LoginMutationData = {
     login: {
         token: string
@@ -22,6 +24,7 @@ type LoginMutationData = {
     }
 };
 
+// Interface do armazenamento do estado de autenticação
 interface AuthState {
     token: string | null;
     refreshToken: string | null;
@@ -35,12 +38,14 @@ interface AuthState {
     isAuthenticated: () => boolean;
 }
 
+// Criação da store de autenticação
 export const useAuthStore = create<AuthState>()(
     persist(
         (set) => ({
             user: null,
             token: null,
             refreshToken: null,
+            // Função para verificar se o usuário está autenticado
             isAuthenticated: () => {
                 const storage = localStorage.getItem("auth-storage");
                 if (!storage) return false;
@@ -51,6 +56,7 @@ export const useAuthStore = create<AuthState>()(
 
                 return !isTokenExpired(token);
             },
+            // Função para armazenar o login
             login: async (loginData: LoginInput) => {
                 try {
                     const { data } = await apolloClient.mutate<LoginMutationData, { data: LoginInput }>({
@@ -81,6 +87,7 @@ export const useAuthStore = create<AuthState>()(
                     throw error;
                 }
             },
+            // Função para armazenar o cadastro
             signup: async (registerData: RegisterInput) => {
                 try {
                     const { data } = await apolloClient.mutate<RegisterMutationData, { data: RegisterInput }>({
@@ -112,6 +119,7 @@ export const useAuthStore = create<AuthState>()(
                     throw error;
                 }
             },
+            // Função para desconectar o usuário
             logout: () => {
                 set({
                     user: null,
@@ -121,6 +129,7 @@ export const useAuthStore = create<AuthState>()(
 
                 apolloClient.clearStore();
             },
+            // Função para substituir o nome real do usuário
             replaceName: (newName: string) => {
                 set((state) => {
                     if (state.user) {

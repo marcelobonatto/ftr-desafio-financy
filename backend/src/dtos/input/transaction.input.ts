@@ -2,6 +2,7 @@ import { IsIn, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 import { Field, InputType, Int } from "type-graphql";
 import { TransactionType } from "../../../generated/prisma/enums";
 
+// Classe de entrada para busca do resumo de transações.
 @InputType()
 export class GetTransactionsSummaryInput {
     @Field(() => Int)
@@ -11,6 +12,7 @@ export class GetTransactionsSummaryInput {
     year!: number;
 }
 
+// Classe de entrada para listagem de transações.
 @InputType()
 export class ListTransactionsInput {
     @Field(() => String, { nullable: true })
@@ -39,6 +41,7 @@ export class ListTransactionsInput {
     perPage!: number;
 }
 
+// Classe de entrada para criação de transação.
 @InputType()
 export class CreateTransactionInput {
     @Field(() => String)
@@ -62,6 +65,7 @@ export class CreateTransactionInput {
     date!: Date;
 }
 
+// Classe de entrada para atualização da transação.
 @InputType()
 export class UpdateTransactionInput {
     @Field(() => String, { nullable: true })

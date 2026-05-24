@@ -1,6 +1,7 @@
 import { IsIn, IsNotEmpty, IsOptional, MaxLength } from "class-validator";
 import { Field, InputType } from "type-graphql";
 
+// Classe de entrada para criação de categoria.
 @InputType()
 export class CreateCategoryInput {
     @Field(() => String)
@@ -26,6 +27,7 @@ export class CreateCategoryInput {
     color!: string;
 }
 
+// Classe de entrada para atualização de categoria.
 @InputType()
 export class UpdateCategoryInput {
     @Field(() => String, { nullable: true })

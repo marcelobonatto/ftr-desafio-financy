@@ -15,23 +15,25 @@ import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transactions";
 export function TransactionsPage() {
   const LIMIT = 10;
 
+  // Estados dos diálogos
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
+  // Estado da transação selecionada para edição ou exclusão
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
+  // Estados dos filtros de busca
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [categoryId, setCategoryId] = useState("all");
   const [type, setType] = useState("all");
   const [period, setPeriod] = useState(new Date().toISOString().slice(0, 7));
+
+  // Estado da página atual
   const [page, setPage] = useState(1);
 
-  const {
-    data: listData,
-    loading,
-    refetch,
-  } = useQuery<TransactionsListData>(LIST_TRANSACTIONS, {
+  // Executa a query para listar as transações
+  const { data: listData, loading, refetch } = useQuery<TransactionsListData>(LIST_TRANSACTIONS, {
     variables: {
       input: {
         page,
@@ -45,39 +47,47 @@ export function TransactionsPage() {
     fetchPolicy: "network-only",
   });
 
-  const [deleteTransaction, { loading: isDeleting }] = useMutation(
-    DELETE_TRANSACTION,
-    {
-      refetchQueries: ["ListTransactions"],
-      onCompleted: () => setShowDeleteDialog(false),
-    },
-  );
+  // Executa a mutation para deletar uma transação
+  const [deleteTransaction, { loading: isDeleting }] = useMutation(DELETE_TRANSACTION, {
+    refetchQueries: ["ListTransactions"],
+    onCompleted: () => setShowDeleteDialog(false),
+  });
 
+  // Extrai os dados da lista de transações
   const transactionsResponse = listData?.listTransactions;
+
+  // Transações
   const transactions = transactionsResponse?.items || [];
+
+  // Total de transações
   const totalCount = transactionsResponse?.totalCount || 0;
 
+  // Criar o evento de nova transação
   const handleCreateTransaction = () => {
     setSelectedTransaction(null);
     setShowEditDialog(true);
   };
 
+  // Criar o evento de edição de transação
   const handleEditTransaction = (transaction) => {
     setSelectedTransaction(transaction);
     setShowEditDialog(true);
   };
 
+  // Criar o evento de exclusão de transação
   const handleDeleteTransaction = (transaction) => {
     setSelectedTransaction(transaction);
     setShowDeleteDialog(true);
   };
 
+  // Criar o evento de confirmação de exclusão de transação
   const handleDeleteConfirm = async () => {
     if (!selectedTransaction) return;
     await deleteTransaction({ variables: { id: selectedTransaction.id } });
   };
 
   useEffect(() => {
+    // Debounce para evitar requisições desnecessárias na digitação do texto da busca
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
       setPage(1);
@@ -86,6 +96,7 @@ export function TransactionsPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
+  // Exibe o loading enquanto carrega as transações
   if (loading) {
     return (
       <Page>
@@ -96,6 +107,7 @@ export function TransactionsPage() {
 
   return (
     <Page>
+      {/* Cabeçalho da página */}
       <PageHeader
         title="Transações"
         description="Gerencie todas as suas transações financeiras"
@@ -103,6 +115,7 @@ export function TransactionsPage() {
         onButtonClick={handleCreateTransaction}
       />
 
+      {/* Filtros de transações */}
       <TransactionFilters
         className="mt-4"
         search={search}
@@ -115,6 +128,7 @@ export function TransactionsPage() {
         onPeriodChange={setPeriod}
       />
 
+      {/* Tabela de transações */}
       {transactions.length === 0 ? (
         <EmptyState
           message="Nenhuma transação encontrada para o período selecionado. Clique em 'Nova transação' para começar a registrar suas finanças!"
@@ -133,6 +147,7 @@ export function TransactionsPage() {
         />
       )}
 
+      {/* Diálogo de edição de transação */}
       <TransactionDialog
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
@@ -140,6 +155,7 @@ export function TransactionsPage() {
         onSuccess={refetch}
       />
 
+      {/* Diálogo de exclusão de transação */}
       <ConfirmationDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}

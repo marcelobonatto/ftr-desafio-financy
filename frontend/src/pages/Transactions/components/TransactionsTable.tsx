@@ -8,6 +8,7 @@ import { CircleArrowDown, CircleArrowUp, SquarePen, Trash2 } from "lucide-react"
 import { TransactionTableFooter } from "./TransactionTableFooter";
 import type { CategoryColor, TransactionDataType } from "@/types";
 
+// Propriedadades do componente da tabela de transações
 interface TransactionsTableProps {
     className?: string;
     transactions: TransactionDataType[];
@@ -19,6 +20,7 @@ interface TransactionsTableProps {
     onDelete: (transaction: TransactionDataType) => void;
 }
 
+// Componente da tabela de transações
 export function TransactionsTable({ className, transactions, totalCount, currentPage, onPageChange, limit, onEdit, onDelete }: TransactionsTableProps) {
     return (
         <Card className={`${className}`}>
@@ -36,23 +38,29 @@ export function TransactionsTable({ className, transactions, totalCount, current
                     </TableHeader>
                     <TableBody>
                         {transactions.map((transaction) => {
+                            // Verifica se a transação é uma entrada ou saída
                             const isIncome = transaction.type === "INCOME";
                             const CategoryIcon = transaction.category.icon;
 
+                            // Renderiza cada linha da tabela
                             return (
                                 <TableRow key={transaction.id}>
+                                    {/* Descrição da transação */}
                                     <TableCell className="text-left flex items-center font-medium gap-2">
                                         <BadgeIcon iconName={CategoryIcon} color={transaction.category.color as CategoryColor} />
                                         {transaction.description}
                                     </TableCell>
+                                    {/* Data da transação */}
                                     <TableCell className="text-center text-gray-600">
                                         {new Date(transaction.date).toLocaleDateString("pt-BR", {
                                             day: "2-digit", month: "2-digit", year: "2-digit",
                                         })}
                                     </TableCell>
+                                    {/* Categoria da transação */}
                                     <TableCell className="text-center text-gray-600">
                                         <BadgeText color={transaction.category.color as CategoryColor} text={transaction.category.name} />
                                     </TableCell>
+                                    {/* Tipo da transação */}
                                     <TableCell className="text-center text-gray-600">
                                         <div className="flex items-center justify-center gap-2">
                                             {isIncome ? (
@@ -68,9 +76,11 @@ export function TransactionsTable({ className, transactions, totalCount, current
                                             )}
                                         </div>
                                     </TableCell>
+                                    {/* Valor da transação */}
                                     <TableCell className="text-right text-gray-600 font-bold">
                                         {isIncome ? "+" : "-"} {formatCurrency(Math.abs(transaction.amount))}
                                     </TableCell>
+                                    {/* Ações da transação */}
                                     <TableCell className="text-right text-gray-600">
                                         <Button variant="outline" size="icon" onClick={() => onDelete(transaction)}>
                                             <Trash2 size={16} color="red" />
@@ -86,6 +96,7 @@ export function TransactionsTable({ className, transactions, totalCount, current
                     <TableFooter className="bg-white border-t border-gray-200">
                         <TableRow className="hover:bg-transparent border-b-0 data-[state=selected]:bg-transparent">
                             <TableCell colSpan={6} className="p-0 border-b-0">
+                                {/* Informações da página e paginação dos registros */}
                                 <TransactionTableFooter
                                     totalCount={totalCount}
                                     currentPage={currentPage}

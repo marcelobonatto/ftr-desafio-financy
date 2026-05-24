@@ -23,6 +23,7 @@ import { useState, type SubmitEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+// Tipagem do retorno da mutação UPDATE_USER
 type UpdateUserMutationData = {
   updateUser: {
     id: string;
@@ -31,6 +32,7 @@ type UpdateUserMutationData = {
   };
 };
 
+// Tipagem das variáveis da mutação UPDATE_USER
 type UpdateUserVariables = {
   id: string;
   data: {
@@ -38,37 +40,46 @@ type UpdateUserVariables = {
   };
 };
 
+// Componente da página de perfil
 export function ProfilePage() {
+  // Armazena o usuário logado
   const { user, replaceName, logout } = useAuthStore();
   const navigate = useNavigate();
   const [name, setName] = useState(() => user?.name ?? "");
 
-  const [updateUser, { loading }] = useMutation<
-    UpdateUserMutationData,
-    UpdateUserVariables
-  >(UPDATE_USER, {
+  // Mutação para atualizar o usuário
+  const [updateUser, { loading }] = useMutation<UpdateUserMutationData, UpdateUserVariables>(
+    UPDATE_USER, {
     onCompleted: (res: UpdateUserMutationData) => {
+      // Obtém os dados atualizados do usuário
       const updatedUser = res.updateUser;
 
+      // Se os dados foram atualizados com sucesso, atualiza o estado e mostra uma mensagem de sucesso
       if (updatedUser && user) {
         replaceName(updatedUser.name);
         toast.success("Perfil atualizado com sucesso!");
       }
     },
+    // Callback de erro
     onError: (error) => {
       toast.error(error.message || "Não foi possível salvar as alterações.");
     },
   });
 
+  // Função que trata o envio do formulário
   const handleSubmit: SubmitEventHandler = async (e) => {
     e.preventDefault();
 
+    // Se não houver usuário logado, retorna
     if (!user?.id) return;
+
+    // Se o nome estiver em branco, mostra uma mensagem de erro
     if (!name.trim()) {
       toast.error("O nome não pode ficar em branco.");
       return;
     }
 
+    // Executa a mutação para atualizar o usuário
     await updateUser({
       variables: {
         id: user.id,
@@ -77,12 +88,14 @@ export function ProfilePage() {
     });
   };
 
+  // Função que trata o logout
   const handleLogout = () => {
     logout();
     navigate("/");
     toast.success("Sessão encerrada com sucesso!");
   };
 
+  // Renderiza o componente
   return (
     <Page>
       <div className="flex flex-col min-h-[calc(100vh-4rem)] items-center justify-center gap-6">
@@ -100,6 +113,7 @@ export function ProfilePage() {
 
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Campo do nome */}
               <div className="space-y-2">
                 <Label htmlFor="name">Nome completo</Label>
 
@@ -120,6 +134,7 @@ export function ProfilePage() {
                 </InputGroup>
               </div>
 
+              {/* Campo do e-mail */}
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
 
@@ -136,11 +151,13 @@ export function ProfilePage() {
                     <Mail />
                   </InputGroupAddon>
                 </InputGroup>
+
                 <FieldDescription>
                   O e-mail não pode ser alterado
                 </FieldDescription>
               </div>
 
+              {/* Botão para salvar alterações */}
               <Button
                 type="submit"
                 variant="solid"
@@ -150,8 +167,7 @@ export function ProfilePage() {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Salvando
-                    alterações...
+                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Salvando alterações...
                   </>
                 ) : (
                   <>
@@ -161,6 +177,7 @@ export function ProfilePage() {
               </Button>
             </form>
 
+            {/* Botão para o usuário desconectar */}
             <Button
               type="button"
               variant="outline"

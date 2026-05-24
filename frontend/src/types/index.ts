@@ -1,3 +1,4 @@
+// Tipo de dados de usuário
 export interface UserDataType {
   id: string;
   name: string;
@@ -6,17 +7,20 @@ export interface UserDataType {
   updatedAt?: string;
 }
 
+// Interface de entrada para registrar usuário
 export interface RegisterInput {
   name: string;
   email: string;
   password: string;
 }
 
+// Interface de entrada para login
 export interface LoginInput {
   email: string;
   password: string;
 }
 
+// Tipo de dados de categoria
 export type CategoryColor =
   | "blue"
   | "purple"
@@ -26,6 +30,7 @@ export type CategoryColor =
   | "yellow"
   | "green";
 
+// Tipo de dados de categoria
 export interface CategoryDataType {
   id: string;
   name: string;
@@ -37,6 +42,7 @@ export interface CategoryDataType {
   updatedAt?: string;
 }
 
+// Informações de paginação
 export interface PageInfo {
   currentPage: number;
   totalPages: number;
@@ -44,6 +50,7 @@ export interface PageInfo {
   hasPreviousPage: boolean;
 }
 
+// Tipo de dados de transação
 export interface TransactionDataType {
   id: string;
   description: string;
@@ -58,6 +65,7 @@ export interface TransactionDataType {
   }
 }
 
+// Tipo de dados de lista de transações
 export interface TransactionsListData {
   listTransactions?: {
     items: TransactionDataType[];
@@ -66,6 +74,7 @@ export interface TransactionsListData {
   };
 }
 
+// Tipo de dados com estatísticas de categorias
 export interface CategoryStatsData {
   getCategoryStatistics: {
     totalCategories: number;
@@ -76,6 +85,7 @@ export interface CategoryStatsData {
   };
 }
 
+// Tipo de dados de categoria para matriz
 export interface CategoryItem {
   id: string;
   name: string;
@@ -85,6 +95,7 @@ export interface CategoryItem {
   transactionCount: number;
 }
 
+// Tipo de dados de lista de categorias
 export interface CategoriesListData {
   listCategories: CategoryItem[];
 }

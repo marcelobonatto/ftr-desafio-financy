@@ -22,7 +22,6 @@ import { useQuery } from "@apollo/client/react";
 import type { CategoryColor, TransactionDataType } from "@/types";
 import { GET_TOP_CATEGORIES } from "@/lib/graphql/queries/Categories";
 import { LoadingState } from "@/components/LoadingState";
-import { useAuthStore } from "@/stores/auth";
 
 interface GetLatestTransactionsData {
   getLatestTransactionsOutput: TransactionDataType[];

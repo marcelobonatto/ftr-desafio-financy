@@ -14,6 +14,7 @@ import type { CategoriesListData } from "@/types";
 import { useQuery } from "@apollo/client/react";
 import { Loader2, Search } from "lucide-react";
 
+// Propriedadades do componente de filtros de transações
 interface TransactionFiltersProps {
   className?: string;
   search: string;
@@ -26,6 +27,7 @@ interface TransactionFiltersProps {
   onPeriodChange: (period: string) => void;
 }
 
+// Componente de filtros de transações
 export function TransactionFilters({
   className,
   search,
@@ -37,14 +39,16 @@ export function TransactionFilters({
   period,
   onPeriodChange,
 }: TransactionFiltersProps) {
-  const { data: categoriesData, loading: categoriesLoading } =
-    useQuery<CategoriesListData>(LIST_CATEGORIES);
+  // Chama a consulta para listar o combo das categorias
+  const { data: categoriesData, loading: categoriesLoading } = useQuery<CategoriesListData>(LIST_CATEGORIES);
   const categories = categoriesData?.listCategories || [];
 
+  // Renderiza os filtros de transações
   return (
     <div
       className={`grid grid-cols-4 gap-6 bg-white p-6 rounded-xl border border-gray-200 w-full mx-auto ${className}`}
     >
+      {/* Filtro por descrição */}
       <div className="space-y-2">
         <Label htmlFor="search" className="text-sm font-medium text-gray-700">
           Buscar
@@ -63,6 +67,7 @@ export function TransactionFilters({
         </InputGroup>
       </div>
 
+      {/* Filtro por tipo de transação */}
       <div className="space-y-2">
         <Label htmlFor="search" className="text-sm font-medium text-gray-700">
           Tipo
@@ -78,6 +83,7 @@ export function TransactionFilters({
         </NativeSelect>
       </div>
 
+      {/* Filtro por categoria */}
       <div className="space-y-2">
         <Label htmlFor="search" className="text-sm font-medium text-gray-700">
           Categoria
@@ -102,6 +108,7 @@ export function TransactionFilters({
         )}
       </div>
 
+      {/* Filtro por período */}
       <div className="space-y-2">
         <Label htmlFor="search" className="text-sm font-medium text-gray-700">
           Período
