@@ -226,6 +226,7 @@ export function TransactionDialogForm({
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
+                required
                 selected={date}
                 onSelect={setDate}
                 defaultMonth={date}

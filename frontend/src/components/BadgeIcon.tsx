@@ -11,7 +11,7 @@ interface BadgeIconProps {
 export function BadgeIcon({ color, iconName, icon: Icon }: BadgeIconProps) {
 
     const selectedColorClass = COLOR_VARIANTS[color];
-    const IconComponent = Icon || (Icons as any)[iconName] || Icons.Tag;
+    const IconComponent = Icon || (Icons as any)[iconName || ''] || Icons.Tag;
 
     return (
         <div className={`${selectedColorClass} h-10 w-10 rounded-md shrink-0 flex items-center justify-center`}>

@@ -19,7 +19,7 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ name, description, count, color, icon: Icon, iconName, className, onEdit, onDelete }: CategoryCardProps) {
-    const IconComponent = Icon || (Icons as any)[iconName] || Icons.Tag;
+    const IconComponent = Icon || (Icons as any)[iconName || ''] || Icons.Tag;
 
     return (
         <Card className={className}>

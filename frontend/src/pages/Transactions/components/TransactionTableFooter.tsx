@@ -12,7 +12,7 @@ interface TransactionTableFooterProps {
 }
 
 // Componente do footer da tabela de transações
-export function TransactionTableFooter({ className, totalCount, currentPage, onPageChange, limit }: TransactionTableFooterProps) {
+export function TransactionTableFooter({ className, totalCount, currentPage, onPageChange, limit = 10 }: TransactionTableFooterProps) {
     // Calcula o número máximo de páginas
     const maxPages = Math.ceil(totalCount / limit);
     // Quantidade de resultados

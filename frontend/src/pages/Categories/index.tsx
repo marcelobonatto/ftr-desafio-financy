@@ -36,12 +36,12 @@ export function CategoriesPage() {
     setShowEditDialog(true);
   };
 
-  const handleEditCategory = (category) => {
+  const handleEditCategory = (category: CategoryItem) => {
     setSelectedCategory(category);
     setShowEditDialog(true);
   };
 
-  const handleDeleteCategory = (category) => {
+  const handleDeleteCategory = (category: CategoryItem) => {
     setSelectedCategory(category);
     setShowDeleteDialog(true);
   };
@@ -83,7 +83,7 @@ export function CategoriesPage() {
         />
         <CategoryStatCard
           iconName={stats?.mostUsedCategoryIcon}
-          value={stats?.mostUsedCategoryName}
+          value={stats?.mostUsedCategoryName || ''}
           description="Categoria mais utilizada"
           color={`text-${stats?.mostUsedCategoryColor}-base`}
           className="flex-1"

@@ -6,7 +6,7 @@ import { TransactionsTable } from "./components/TransactionsTable";
 import { TransactionDialog } from "@/components/TransactionDialog";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { LIST_TRANSACTIONS } from "@/lib/graphql/queries/Transactions";
-import type { TransactionsListData } from "@/types";
+import type { TransactionDataType, TransactionsListData } from "@/types";
 import { LoadingState } from "@/components/LoadingState";
 import { EmptyState } from "@/components/EmptyState";
 import { ConfirmationDialog } from "@/components/ConfirmationDialog";
@@ -20,7 +20,7 @@ export function TransactionsPage() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Estado da transação selecionada para edição ou exclusão
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<TransactionDataType | null>(null);
 
   // Estados dos filtros de busca
   const [search, setSearch] = useState("");
@@ -69,13 +69,13 @@ export function TransactionsPage() {
   };
 
   // Criar o evento de edição de transação
-  const handleEditTransaction = (transaction) => {
+  const handleEditTransaction = (transaction: TransactionDataType) => {
     setSelectedTransaction(transaction);
     setShowEditDialog(true);
   };
 
   // Criar o evento de exclusão de transação
-  const handleDeleteTransaction = (transaction) => {
+  const handleDeleteTransaction = (transaction: TransactionDataType) => {
     setSelectedTransaction(transaction);
     setShowDeleteDialog(true);
   };
